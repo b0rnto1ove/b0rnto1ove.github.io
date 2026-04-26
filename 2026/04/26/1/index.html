@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="tiSegment用于告诉内核，在执行ELF文件时应该如何映射内存每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息是运行时必须提供的信息Section用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息每个Section主要包含Section类型、文件中的位置、大小等信息链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并修">
+  <meta name="description" content="tiSegment用于告诉内核，在执行ELF文件时应该如何映射内存每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息是运行时必须提供的信息Section用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息每个Section主要包含Section类型、文件中的位置、大小等信息链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并">
 <meta property="og:type" content="article">
 <meta property="og:title" content="elf文件解析">
 <meta property="og:url" content="http://example.com/2026/04/26/1/index.html">
 <meta property="og:site_name" content="qingspace">
-<meta property="og:description" content="tiSegment用于告诉内核，在执行ELF文件时应该如何映射内存每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息是运行时必须提供的信息Section用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息每个Section主要包含Section类型、文件中的位置、大小等信息链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并修">
+<meta property="og:description" content="tiSegment用于告诉内核，在执行ELF文件时应该如何映射内存每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息是运行时必须提供的信息Section用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息每个Section主要包含Section类型、文件中的位置、大小等信息链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-04-26T11:13:14.679Z">
-<meta property="article:modified_time" content="2026-04-26T11:18:22.661Z">
+<meta property="article:modified_time" content="2026-04-26T12:26:17.082Z">
 <meta property="article:author" content="b0rnto1ove">
 <meta name="twitter:card" content="summary">
 
@@ -196,7 +196,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2026-04-26 19:13:14 / 修改时间：19:18:22" itemprop="dateCreated datePublished" datetime="2026-04-26T19:13:14+08:00">2026-04-26</time>
+              <time title="创建时间：2026-04-26 19:13:14 / 修改时间：20:26:17" itemprop="dateCreated datePublished" datetime="2026-04-26T19:13:14+08:00">2026-04-26</time>
             </span>
 
           
@@ -210,7 +210,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>tiSegment<br>用于告诉内核，在执行ELF文件时应该如何映射内存<br>每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息<br>是运行时必须提供的信息<br>Section<br>用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息<br>每个Section主要包含Section类型、文件中的位置、大小等信息<br>链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并修复互相引用<br>Segment与Section的关系<br>相同权限的Section会放入同一个Segment，例如.text和.rodata section<br>一个Segment包含许多Section，一个Section可以属于多个Segment<br>目标文件的格式<br>动态链接库：windows下的.dll，linux下的.so<br>静态链接库:  windows下的.lib,linux下的.a<br>elf文件结构</p>
+        <span id="more"></span>
+<p>tiSegment<br>用于告诉内核，在执行ELF文件时应该如何映射内存<br>每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息<br>是运行时必须提供的信息<br>Section<br>用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息<br>每个Section主要包含Section类型、文件中的位置、大小等信息<br>链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并修复互相引用<br>Segment与Section的关系<br>相同权限的Section会放入同一个Segment，例如.text和.rodata section<br>一个Segment包含许多Section，一个Section可以属于多个Segment<br>目标文件的格式<br>动态链接库：windows下的.dll，linux下的.so<br>静态链接库:  windows下的.lib,linux下的.a<br>elf文件结构</p>
 <p> 段（Segment）与节（Section）的区别。很多地方对两者有所混淆。段是程序执行的必要组成，当多个目标文件链接成一个可执行文件时，会将相同权限的节合并到一个段中。相比而言，节的粒度更小。<br>$ readelf -h hello.o</p>
 <p>ELF Header:<br>  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00<br>  Class:                             ELF64<br>  Data:                              2’s complement, little endian<br>  Version:                           1 (current)<br>  OS&#x2F;ABI:                            UNIX - System V<br>  ABI Version:                       0<br>  Type:                              REL (Relocatable file)<br>  Machine:                           Advanced Micro Devices X86-64<br>  Version:                           0x1<br>  Entry point address:               0x0<br>  Start of program headers:          0 (bytes into file)<br>  Start of section headers:          672 (bytes into file)<br>  Flags:                             0x0<br>  Size of this header:               64 (bytes)<br>  Size of program headers:           0 (bytes)<br>  Number of program headers:         0<br>  Size of section headers:           64 (bytes)<br>  Number of section headers:         13<br>  Section header string table index: 10<br>elf的文件类型<br>通过e_type来划分，<br>可重定位文件，ETL_REL，一般为.o文件，可以被链接成可执行文件或共享目标文件。静态链接库属于可重定位文件。<br>可执行文件，ET_EXEC,可以直接执行的程序可执行文件是由链接器将一些单独的目标文件以及库文件链接起来而得到的。其中，链接器会解析引用（不同文件中的子例程的引用以及数据的引用，调整对象文件中的绝对引用）并且重定位指令。加载与链接过程需要目标文件中的信息，并且会将处理后的信息存储在一些特定的节区中，比如 .dynamic 。<br>共享目标文件，ET_DYN，一般是.so文件有两种情况可以使用，<br>链接器将其与其他可重定位文件，共享目标文件链接成新的目标文件<br>动态链接器将其与其他共享文件目标，结合一个可执行文件，创建进程镜像<br>ps（链接器是指在程序运行的过程中加载ELF，解析.so并且重新定位)</p>
 <p>elf header<br>#define EI_NIDENT   16</p>
