@@ -22,30 +22,32 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="好事多磨">
-<meta property="og:type" content="website">
-<meta property="og:title" content="qingspace">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="tiSegment用于告诉内核，在执行ELF文件时应该如何映射内存每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息是运行时必须提供的信息Section用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息每个Section主要包含Section类型、文件中的位置、大小等信息链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并修">
+<meta property="og:type" content="article">
+<meta property="og:title" content="elf文件解析">
+<meta property="og:url" content="http://example.com/2026/04/26/1/index.html">
 <meta property="og:site_name" content="qingspace">
-<meta property="og:description" content="好事多磨">
+<meta property="og:description" content="tiSegment用于告诉内核，在执行ELF文件时应该如何映射内存每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息是运行时必须提供的信息Section用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息每个Section主要包含Section类型、文件中的位置、大小等信息链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并修">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-26T11:13:14.679Z">
+<meta property="article:modified_time" content="2026-04-26T11:18:22.661Z">
 <meta property="article:author" content="b0rnto1ove">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2026/04/26/1/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>qingspace</title>
+  <title>elf文件解析 | qingspace</title>
   
 
 
@@ -163,9 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -181,10 +184,9 @@
       <meta itemprop="name" content="qingspace">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/04/26/1/" class="post-title-link" itemprop="url">elf文件解析</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          elf文件解析
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -208,7 +210,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>tiSegment<br>用于告诉内核，在执行ELF文件时应该如何映射内存<br>每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息<br>是运行时必须提供的信息<br>Section<br>用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息<br>每个Section主要包含Section类型、文件中的位置、大小等信息<br>链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并修复互相引用<br>Segment与Section的关系<br>相同权限的Section会放入同一个Segment，例如.text和.rodata section<br>一个Segment包含许多Section，一个Section可以属于多个Segment<br>目标文件的格式<br>动态链接库：windows下的.dll，linux下的.so<br>静态链接库:  windows下的.lib,linux下的.a<br>elf文件结构</p>
+        <p>tiSegment<br>用于告诉内核，在执行ELF文件时应该如何映射内存<br>每个Segment主要包含加载地址、文件中的范围、内存权限、对齐方式等信息<br>是运行时必须提供的信息<br>Section<br>用于告诉链接器，ELF中每个部分是什么，哪里是代码，哪里是只读数据，哪里是重定位信息<br>每个Section主要包含Section类型、文件中的位置、大小等信息<br>链接器依赖Section信息将不同的对象文件的代码、数据信息合并，并修复互相引用<br>Segment与Section的关系<br>相同权限的Section会放入同一个Segment，例如.text和.rodata section<br>一个Segment包含许多Section，一个Section可以属于多个Segment<br>目标文件的格式<br>动态链接库：windows下的.dll，linux下的.so<br>静态链接库:  windows下的.lib,linux下的.a<br>elf文件结构</p>
 <p> 段（Segment）与节（Section）的区别。很多地方对两者有所混淆。段是程序执行的必要组成，当多个目标文件链接成一个可执行文件时，会将相同权限的节合并到一个段中。相比而言，节的粒度更小。<br>$ readelf -h hello.o</p>
 <p>ELF Header:<br>  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00<br>  Class:                             ELF64<br>  Data:                              2’s complement, little endian<br>  Version:                           1 (current)<br>  OS&#x2F;ABI:                            UNIX - System V<br>  ABI Version:                       0<br>  Type:                              REL (Relocatable file)<br>  Machine:                           Advanced Micro Devices X86-64<br>  Version:                           0x1<br>  Entry point address:               0x0<br>  Start of program headers:          0 (bytes into file)<br>  Start of section headers:          672 (bytes into file)<br>  Flags:                             0x0<br>  Size of this header:               64 (bytes)<br>  Size of program headers:           0 (bytes)<br>  Number of program headers:         0<br>  Size of section headers:           64 (bytes)<br>  Number of section headers:         13<br>  Section header string table index: 10<br>elf的文件类型<br>通过e_type来划分，<br>可重定位文件，ETL_REL，一般为.o文件，可以被链接成可执行文件或共享目标文件。静态链接库属于可重定位文件。<br>可执行文件，ET_EXEC,可以直接执行的程序可执行文件是由链接器将一些单独的目标文件以及库文件链接起来而得到的。其中，链接器会解析引用（不同文件中的子例程的引用以及数据的引用，调整对象文件中的绝对引用）并且重定位指令。加载与链接过程需要目标文件中的信息，并且会将处理后的信息存储在一些特定的节区中，比如 .dynamic 。<br>共享目标文件，ET_DYN，一般是.so文件有两种情况可以使用，<br>链接器将其与其他可重定位文件，共享目标文件链接成新的目标文件<br>动态链接器将其与其他共享文件目标，结合一个可执行文件，创建进程镜像<br>ps（链接器是指在程序运行的过程中加载ELF，解析.so并且重新定位)</p>
 <p>elf header<br>#define EI_NIDENT   16</p>
@@ -246,86 +248,30 @@
 <p>sys_execve¶<br>该函数主要用于执行一个新的程序，即执行我们想要执行的程序，会检查相应的 argv 以及 envp 等参数。<br>do_execve¶<br>该函数打开目标映像文件，并从目标文件的开始处读入指定长度的（目前为 128）字节来获取相应目标文件的基本信息。<br>search_binary_handler¶<br>该函数会搜索支持处理当前类型的二进制文件类型队列，以便于让各种可执行程序的处理程序进行相应的处理。<br>load_elf_binary¶<br>该函数的主要处理流程如下<br>● 检查并获取 elf 文件的头部信息。<br>● 如果目标文件采用动态链接，则使用. interp 节来确定 loader 的路径。<br>● 将 program header 中记录的相应的段映射到内存中。program header 中有以下重要信息<br>● 每一个段需要映射到的地址<br>● 每一个段相应的权限。<br>● 记录哪些节属于哪些段。<br>具体的映射如下</p>
 <p>分情况处理<br>● 动态链接情况下，将 sys_execve 的返回地址改为 loader(ld.so) 的 entry point。<br>● 静态链接情况下，将 sys_execve 的返回地址改为程序的入口点。<br>ld.so¶<br>该文件有以下功能<br>● 主要用于载入 ELF 文件中 DT_NEED 中记录的共享库。<br>● 初始化工作<br>● 初始化 GOT 表。<br>● 将 symbol table 合并到 global symbol table。<br>_start¶<br>_start 函数会将以下项目交给 libc_start_main<br>● 环境变量起始地址<br>● .init<br>● 启动 main 函数前的初始化工作<br>● fini<br>● 程序结束前的收尾工作。</p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/03/03/hello-world/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="b0rnto1ove">
-      <meta itemprop="description" content="好事多磨">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qingspace">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/03/03/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2026-03-03 16:52:44" itemprop="dateCreated datePublished" datetime="2026-03-03T16:52:44+08:00">2026-03-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-04-15 18:27:46" itemprop="dateModified" datetime="2026-04-15T18:27:46+08:00">2026-04-15</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>b0rnto1ove:heart: ❤️</p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/03/03/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -378,6 +324,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8D%E5%AD%97-%E5%9C%B0%E5%9D%80-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">名字        地址        类型</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
