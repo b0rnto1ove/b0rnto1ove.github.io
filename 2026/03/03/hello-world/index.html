@@ -399,7 +399,7 @@
   
 
   
-<script>
+﻿<script>
 document.addEventListener('DOMContentLoaded', () => {
   if (!window.CONFIG || !CONFIG.page || !CONFIG.page.isHome) return;
 
@@ -429,9 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
           查看全部文章
         </button>
       </div>
-      <aside class="home-landing__avatar" aria-hidden="true">
-        <img src="/images/avatar-soft.png" alt="avatar">
-      </aside>
     </div>
   `;
 
@@ -444,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const href = link ? link.getAttribute('href') : '#';
     const title = link ? link.textContent.trim() : '未命名文章';
     const date = time ? time.textContent.trim() : '';
-    const excerptText = bodyText ? bodyText.textContent.replace(/\\s+/g, ' ').trim() : '';
+    const excerptText = bodyText ? bodyText.textContent.replace(/\s+/g, ' ').trim() : '';
     const excerpt = excerptText.slice(0, 120);
 
     return `
@@ -484,13 +481,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const openPanel = () => {
     panel.classList.add('is-open');
     panel.setAttribute('aria-hidden', 'false');
-    body.style.overflow = 'hidden';
   };
 
   const closePanel = () => {
     panel.classList.remove('is-open');
     panel.setAttribute('aria-hidden', 'true');
-    body.style.overflow = '';
   };
 
   openButton.addEventListener('click', openPanel);
