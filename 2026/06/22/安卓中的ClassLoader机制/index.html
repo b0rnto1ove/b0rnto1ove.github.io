@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"b0rnto1ove.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="claAndroid中的ClassLoader分为系统类加载器和自定义加载器: 系统类加载器  包括 BootClassLoader, PathClassLoader, DexClassLoader等  自定义加载器  通过继承BaseDexClassLoader实现,它们的继承关系如图所示:    ClassLoader  抽象类,定义了ClassLoader的主要功能.  BootClassL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安卓中的ClassLoader机制">
+<meta property="og:url" content="https://b0rnto1ove.github.io/2026/06/22/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="b0rnto1ove">
+<meta property="og:description" content="claAndroid中的ClassLoader分为系统类加载器和自定义加载器: 系统类加载器  包括 BootClassLoader, PathClassLoader, DexClassLoader等  自定义加载器  通过继承BaseDexClassLoader实现,它们的继承关系如图所示:    ClassLoader  抽象类,定义了ClassLoader的主要功能.  BootClassL">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-a133557feeaf.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-0075973d6c59.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-87c12fd7d5b4.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-07a37a05e6cb.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-33dc06447927.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-26e80f57240c.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-c4216daec504.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-eb9e29e89e4d.png">
+<meta property="article:published_time" content="2026-06-22T05:14:13.000Z">
+<meta property="article:modified_time" content="2026-06-22T05:30:10.427Z">
+<meta property="article:author" content="b0rnto1ove">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://b0rnto1ove.github.io/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-a133557feeaf.png">
+
+<link rel="canonical" href="https://b0rnto1ove.github.io/2026/06/22/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>安卓中的ClassLoader机制 | b0rnto1ove</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">b0rnto1ove</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">好事多磨</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://b0rnto1ove.github.io/2026/06/22/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="b0rnto1ove">
+      <meta itemprop="description" content="好事多磨">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="b0rnto1ove">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          安卓中的ClassLoader机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-06-22 13:14:13 / 修改时间：13:30:10" itemprop="dateCreated datePublished" datetime="2026-06-22T13:14:13+08:00">2026-06-22</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="claAndroid中的ClassLoader分为系统类加载器和自定义加载器"><a href="#claAndroid中的ClassLoader分为系统类加载器和自定义加载器" class="headerlink" title="claAndroid中的ClassLoader分为系统类加载器和自定义加载器:"></a><font style="color:rgb(0, 0, 0);">claAndroid中的ClassLoader分为系统类加载器和自定义加载器:</font></h2><ul>
+<li><font style="color:rgb(0, 0, 0);">系统类加载器</font></li>
+</ul>
+<p><font style="color:rgb(0, 0, 0);">包括 BootClassLoader, PathClassLoader, DexClassLoader等</font></p>
+<ul>
+<li><font style="color:rgb(0, 0, 0);">自定义加载器</font></li>
+</ul>
+<p><font style="color:rgb(0, 0, 0);">通过继承BaseDexClassLoader实现,它们的继承关系如图所示:</font></p>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-a133557feeaf.png"></p>
+<ol>
+<li><font style="color:rgb(0, 0, 0);">ClassLoader</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">抽象类,定义了ClassLoader的主要功能.</font></p>
+<ol start="2">
+<li><font style="color:rgb(0, 0, 0);">BootClassLoader</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">继承自ClassLoader,用于Android系统启动时预加载常用类.</font></p>
+<ol start="3">
+<li><font style="color:rgb(0, 0, 0);">SecureClassLoader</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">继承自ClassLoader扩展了类权限方面的功能,加强了安全性.</font></p>
+<ol start="4">
+<li><font style="color:rgb(0, 0, 0);">URLClassLoader</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">继承自SecureClassLoader,用于通过URL路径加载类和资源.</font></p>
+<ol start="5">
+<li><font style="color:rgb(0, 0, 0);">BaseDexClassLoader</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">继承自ClassLoader,是抽象类ClassLoader的具体实现类.</font></p>
+<ol start="6">
+<li><font style="color:rgb(0, 0, 0);">InMemoryDexClassLoader（Android8.0新增）</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">继承自BaseDexClassLoader,用于加载内存中的dex文件.</font></p>
+<ol start="7">
+<li><font style="color:rgb(0, 0, 0);">PathClassLoader</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">继承自BaseDexClassLoader,用于加载已安装的apk的dex文件.</font></p>
+<ol start="8">
+<li><font style="color:rgb(0, 0, 0);">DexClassLoader</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">继承自BaseDexClassLoader,用于加载已安装的apk的dex文件,以及从SD卡中加载未安装的apk的dex文件.</font></p>
+<p><font style="color:rgb(0, 0, 0);">实现安卓加固时，壳程序动态加载被保护程序的dex文件主要使用以下3个类加载器</font></p>
+<p><strong><font style="color:rgb(0, 0, 0);">1.dexclassloader可以加载未安装apk的dex文件（一代壳落地加载的核心）</font></strong></p>
+<p><strong><font style="color:rgb(0, 0, 0);">2.inmemorydexclassloader加载内存中的dex文件（二代壳不落地加载的核心）</font></strong></p>
+<p><strong><font style="color:rgb(0, 0, 0);">3.basedexclassloader是classloader的具体实现类实际上dexclassloader，pathclassloader以及inmemorydexclassloader加载类时，均通过委托BaseDexClassLoader实现</font></strong></p>
+<h2 id="classloader加载dex流程"><a href="#classloader加载dex流程" class="headerlink" title="classloader加载dex流程"></a><font style="color:rgb(0, 0, 0);">classloader加载dex流程</font></h2><p><font style="color:rgb(0, 0, 0);">Dex文件的加载依赖于前文提到的PathClassLoader,DexClassLoader和InMemoryDexClassLoader</font></p>
+<p><font style="color:rgb(0, 0, 0);">加载Dex文件的功能均通过委托父加载器BaseDexClassLoader实现.其中PathClassLoader和DexClassLoader调用相同的BaseDexClassLoader构造函数,InMemoryDexClassLoader调用另一个构造函数</font></p>
+<p><font style="color:rgb(0, 0, 0);">最终通过ArtDexFileLoader::OpenCommon方法在ART虚拟机中创建DexFile::DexFile对象,该对象是Dex文件在内存中的表示,用于安卓程序运行时加载类以及执行方法代码,也是后续第三代加固——代码抽取加固,进行指令回填时的关键对象.</font></p>
+<h3 id="1Java层"><a href="#1Java层" class="headerlink" title="1Java层"></a><font style="color:rgb(0, 0, 0);">1Java层</font></h3><h4 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a><font style="color:rgb(0, 0, 0);">双亲委派模型</font></h4><!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-0075973d6c59.png"></p>
+<p>加载.class文件,以递归的形式逐级向上委托父加载器加载，如果加载过了就不再加载一遍</p>
+<p>如果父加载器没有加载过，继续委托给父加载器去加载，一直到这条链路的顶级，如果classloader没有加载过则尝试加载，尝试失败则逐级向下交还调用者加载（下一级）</p>
+<p><strong>作用：防止同一个.class文件重复加载；</strong><font style="color:rgb(51, 51, 51);">对于任意一个类确保在虚拟机中的唯一性.由</font><strong><font style="color:rgb(145, 109, 213);">加载它的类加载器</font></strong><font style="color:rgb(51, 51, 51);">和这个</font><strong><font style="color:rgb(145, 109, 213);">类的全类名一同确立其在Java虚拟机中的</font></strong><font style="color:rgb(51, 51, 51);">唯一性；保证.class文件不被篡改，加载逻辑不被改变</font></p>
+<p><strong><font style="color:rgb(0, 0, 0);">PathClassLoader和DexClassLoader委托BaseDexClassLoader最终执行JNI方法DexFile.openDexFileNative进入Native层.</font></strong></p>
+<p><strong><font style="color:rgb(0, 0, 0);">而InMemoryDexClassLoader委托BaseDexClassLoader后则执行DexFile.openInMemoryDexFiles进入Native层.</font></strong></p>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-87c12fd7d5b4.png"></p>
+<p><font style="color:rgb(0, 0, 0);">BaseDexClassLoader.findClass调用DexPathList.findClass,其内部调用Element.findClass,最终调用DexFile.loadClassBinaryName进入DexFile中,该流程如图所示:</font></p>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-07a37a05e6cb.png"></p>
+<p><font style="color:rgb(0, 0, 0);">进入DexFile后,主要执行以下操作:</font></p>
+<ol>
+<li><font style="color:rgb(0, 0, 0);">DexFile</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">通过JNI函数defineClassNative进入Native层.</font></p>
+<ol start="2">
+<li><font style="color:rgb(0, 0, 0);">DexFile_defineClassNative</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">通过FindClassDef枚举DexFile的所有DexClassDef结构并使用ClassLinker::DefineClass创建对应的Class对象.</font></p>
+<p><font style="color:rgb(0, 0, 0);">之后调用ClassLinker::InsertDexFileInToClassLoader将对应的DexFile对象添加到ClassLoader的ClassTable中.</font></p>
+<ol start="3">
+<li><font style="color:rgb(0, 0, 0);">ClassLinker::DefineClass</font></li>
+</ol>
+<p><font style="color:rgb(0, 0, 0);">调用LoadField加载类的相关字段,之后调用LoadMethod加载方法,再调用LinkCode执行方法代码的链接.</font></p>
+<p><font style="color:rgb(0, 0, 0);">该流程如图所示:</font><!-- 这是一张图片，ocr 内容为： --><br><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-33dc06447927.png"></p>
+<p><font style="color:rgb(0, 0, 0);">综上所述,ClassLoader最终通过ClassLinker::DefineClass创建Class对象,并完成Field和Method的加载以及Code的链接.</font></p>
+<p><font style="color:rgb(0, 0, 0);">调用链中有一个核心函数——ClassLinker::LoadMethod,通过该函数可以获取方法字节码在DexFile中的偏移值code_off,它是实现指令回填的核心之一</font></p>
+<h3 id="2-native层"><a href="#2-native层" class="headerlink" title="2.native层"></a><font style="color:rgb(51, 51, 51);">2.native层</font></h3><p><strong><font style="color:rgb(0, 0, 0);">PathClassLoader和DexClassLoader这条委托链会根据不同情况,调用ArtDexFileLoader::Open的不同重载,或者调用OpenOneDexFileFromZip.</font></strong></p>
+<p><strong><font style="color:rgb(0, 0, 0);">InMemoryDexClassLoader调用ArtDexFileLoader::Open的第3种重载.</font></strong></p>
+<p><strong><font style="color:rgb(0, 0, 0);">无论是调用哪个函数,最终都会调用ArtDexFileLoader::OpenCommon.</font></strong></p>
+<h3 id=""><a href="#" class="headerlink" title=""></a><!-- 这是一张图片，ocr 内容为： --></h3><p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-26e80f57240c.png"><font style="color:rgb(51, 51, 51);"><br></font><font style="color:rgb(51, 51, 51);"> </font><br><font style="color:rgb(0, 0, 0);">经过以上调用流程后进入ArtDexFileLoader::OpenCommon,经过DexFile的初始化和验证操作后便成功创建了DexFile对象:</font></p>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-c4216daec504.png"></p>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-eb9e29e89e4d.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/06/22/Xposed%E6%A1%86%E6%9E%B6/" rel="prev" title="Xposed框架">
+      <i class="fa fa-chevron-left"></i> Xposed框架
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#claAndroid%E4%B8%AD%E7%9A%84ClassLoader%E5%88%86%E4%B8%BA%E7%B3%BB%E7%BB%9F%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%92%8C%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">claAndroid中的ClassLoader分为系统类加载器和自定义加载器:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#classloader%E5%8A%A0%E8%BD%BDdex%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">classloader加载dex流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1Java%E5%B1%82"><span class="nav-number">2.1.</span> <span class="nav-text">1Java层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.1.1.</span> <span class="nav-text">双亲委派模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-native%E5%B1%82"><span class="nav-number">2.2.</span> <span class="nav-text">2.native层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.3.</span> <span class="nav-text"></span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="b0rnto1ove"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">b0rnto1ove</p>
+  <div class="site-description" itemprop="description">好事多磨</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">b0rnto1ove</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+﻿<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const isRootPage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+  if (!isRootPage) return;
+
+  const body = document.body;
+  const mainInner = document.querySelector('.main-inner');
+  const contentWrap = document.querySelector('.content-wrap');
+  const postBlocks = [...document.querySelectorAll('.content.index .post-block')];
+
+  if (!mainInner || !contentWrap) return;
+
+  body.classList.add('is-home-enhanced');
+
+  const heartSvg = '<svg class="empty" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"></path></svg><svg class="filled" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"></path></svg>';
+
+  const hero = document.createElement('section');
+  hero.className = 'home-landing';
+  hero.innerHTML = `
+    <div class="home-landing__bg"></div>
+    <div class="home-landing__overlay"></div>
+    <div class="home-landing__content">
+      <div class="home-landing__copy">
+        <p class="home-landing__eyebrow">Home</p>
+        <h1 class="home-landing__title">b0rnto1ove</h1>
+        <p class="home-landing__subtitle">好事多磨</p>
+        <button class="home-landing__button" id="home-open-posts" type="button" aria-label="查看全部文章">
+          ${heartSvg}
+          查看全部文章
+        </button>
+      </div>
+    </div>
+  `;
+
+  mainInner.insertBefore(hero, contentWrap);
+
+  const cards = postBlocks.map(post => {
+    const link = post.querySelector('.post-title-link');
+    const time = post.querySelector('time');
+    const bodyText = post.querySelector('.post-body');
+    const href = link ? link.getAttribute('href') : '#';
+    const title = link ? link.textContent.trim() : '未命名文章';
+    const date = time ? time.textContent.trim() : '';
+    const excerptText = bodyText ? bodyText.textContent.replace(/\s+/g, ' ').trim() : '';
+    const excerpt = excerptText.slice(0, 120);
+
+    return `
+      <article class="home-post-card">
+        <p class="home-post-card__meta">${date}</p>
+        <a class="home-post-card__title" href="${href}">${title}</a>
+        <p class="home-post-card__excerpt">${excerpt}${excerptText.length > 120 ? '...' : ''}</p>
+        <a class="home-post-card__more" href="${href}">阅读全文</a>
+      </article>
+    `;
+  }).join('');
+
+  const panelContent = cards || `
+    <div class="home-posts-panel__empty">
+      <p class="home-posts-panel__kicker">Posts</p>
+      <h2 class="home-posts-panel__title">这里先空着</h2>
+      <p class="home-posts-panel__empty-copy">等你写下新的文章，它们会出现在这里。</p>
+    </div>
+  `;
+
+  const panel = document.createElement('section');
+  panel.className = 'home-posts-panel';
+  panel.setAttribute('aria-hidden', 'true');
+  panel.innerHTML = `
+    <div class="home-posts-panel__backdrop" id="home-close-posts-backdrop"></div>
+    <div class="home-posts-panel__dialog">
+      <div class="home-posts-panel__header">
+        <div>
+          <p class="home-posts-panel__kicker">Posts</p>
+          <h2 class="home-posts-panel__title">我的文章</h2>
+        </div>
+        <button class="home-posts-panel__close" id="home-close-posts-button" type="button">关闭</button>
+      </div>
+      <div class="home-posts-panel__grid ${cards ? '' : 'is-empty'}">
+        ${panelContent}
+      </div>
+    </div>
+  `;
+
+  body.appendChild(panel);
+
+  const openButton = document.getElementById('home-open-posts');
+  const closeButton = document.getElementById('home-close-posts-button');
+  const closeBackdrop = document.getElementById('home-close-posts-backdrop');
+
+  const openPanel = () => {
+    panel.classList.add('is-open');
+    panel.setAttribute('aria-hidden', 'false');
+  };
+
+  const closePanel = () => {
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+  };
+
+  openButton.addEventListener('click', openPanel);
+  closeButton.addEventListener('click', closePanel);
+  closeBackdrop.addEventListener('click', closePanel);
+
+  window.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && panel.classList.contains('is-open')) {
+      closePanel();
+    }
+  });
+});
+</script>
+
+
+</body>
+</html>

@@ -1169,7 +1169,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #08ffb4;
+  background: #d9b6d9;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2566,6 +2566,29 @@ ul.breadcrumb li + li:last-child {
 }
 body {
   background: #0f0a09;
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+body:not(.is-home-enhanced) {
+  background: #120d0c;
+}
+body:not(.is-home-enhanced)::before {
+  content: '';
+  position: fixed;
+  inset: -24px;
+  z-index: -2;
+  background-image: url("/images/mount-fuji.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(14px);
+  transform: scale(1.04);
+}
+body:not(.is-home-enhanced)::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(20,10,9,0.62) 0%, rgba(20,10,9,0.5) 100%), radial-gradient(circle at 18% 22%, rgba(151,58,27,0.16), transparent 32%);
 }
 body.is-home-enhanced {
   overflow: hidden;
@@ -2641,7 +2664,7 @@ body.is-home-enhanced .main {
 .home-landing__subtitle {
   margin: 0;
   color: #fffaf5;
-  font-family: 'Noto Serif SC', 'Songti SC', serif;
+  font-family: "Baskerville", "Times New Roman", "Songti SC", "Noto Serif SC", serif;
 }
 .home-landing__title {
   margin-top: 14px;
@@ -2651,7 +2674,9 @@ body.is-home-enhanced .main {
 }
 .home-landing__subtitle {
   margin-top: 16px;
-  font-size: 28px;
+  font-size: 26px;
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-weight: 500;
   text-shadow: 0 8px 24px rgba(0,0,0,0.24);
 }
 .home-landing__button {
@@ -2667,9 +2692,9 @@ body.is-home-enhanced .main {
   box-shadow: rgba(84,34,20,0.22) 0 -2px 6px 0 inset;
   color: #6a3325;
   cursor: pointer;
-  font-family: monospace;
-  font-size: 25px;
-  font-weight: 900;
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 23px;
+  font-weight: 700;
   transition: transform 400ms cubic-bezier(0.68, -0.55, 0.27, 2.5), border-color 400ms ease-in-out, background-color 400ms ease-in-out;
   word-spacing: -2px;
 }
@@ -2748,7 +2773,7 @@ body.is-home-enhanced .main {
 .home-post-card__title {
   margin: 0;
   color: #241612;
-  font-family: 'Noto Serif SC', 'Songti SC', serif;
+  font-family: "Baskerville", "Times New Roman", "Songti SC", "Noto Serif SC", serif;
 }
 .home-posts-panel__title {
   margin-top: 10px;
@@ -2767,6 +2792,18 @@ body.is-home-enhanced .main {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
+}
+.home-posts-panel__grid.is-empty {
+  grid-template-columns: 1fr;
+}
+.home-posts-panel__empty {
+  padding: 36px 20px 18px;
+  text-align: center;
+}
+.home-posts-panel__empty-copy {
+  margin: 14px 0 0;
+  color: rgba(58,34,28,0.7);
+  font-size: 16px;
 }
 .home-post-card {
   padding: 24px;
@@ -2798,6 +2835,35 @@ body.is-home-enhanced .main {
   box-shadow: 0 0 5px rgba(202,203,204,0.35);
   border-radius: 10px;
 }
+body:not(.is-home-enhanced) .container,
+body:not(.is-home-enhanced) .main,
+body:not(.is-home-enhanced) .main-inner,
+body:not(.is-home-enhanced) .content-wrap {
+  background: transparent !important;
+}
+body:not(.is-home-enhanced) .main {
+  min-height: 100vh;
+}
+body:not(.is-home-enhanced) .header,
+body:not(.is-home-enhanced) .sidebar-inner,
+body:not(.is-home-enhanced) .post-block,
+body:not(.is-home-enhanced) .post,
+body:not(.is-home-enhanced) .pagination,
+body:not(.is-home-enhanced) .comments {
+  background: rgba(255,249,244,0.9);
+  box-shadow: 0 24px 60px rgba(50,28,18,0.16);
+}
+body:not(.is-home-enhanced) .header {
+  backdrop-filter: blur(14px);
+}
+body:not(.is-home-enhanced) .sidebar-inner {
+  border-radius: 18px;
+}
+body:not(.is-home-enhanced) .post-block,
+body:not(.is-home-enhanced) .post {
+  border-radius: 28px;
+  backdrop-filter: blur(14px);
+}
 @media (max-width: 960px) {
   .home-landing__content {
     justify-content: flex-end;
@@ -2825,6 +2891,80 @@ body.is-home-enhanced .main {
   .home-posts-panel__header {
     flex-direction: column;
   }
+}
+.home-post-card__more {
+  display: inline-flex;
+  margin-top: 16px;
+  color: #8f2f24;
+  font-weight: 600;
+}
+.home-post-card__more:hover {
+  color: #6a3325;
+}
+body:not(.is-home-enhanced) .content-wrap,
+body:not(.is-home-enhanced) .post-body,
+body:not(.is-home-enhanced) .post-header,
+body:not(.is-home-enhanced) .post-footer {
+  background: transparent !important;
+}
+body:not(.is-home-enhanced) .post-block {
+  padding: 34px 38px;
+}
+body:not(.is-home-enhanced) .post-body {
+  color: #3f332f;
+}
+body:not(.is-home-enhanced) .sidebar,
+body:not(.is-home-enhanced) .sidebar-toggle,
+body:not(.is-home-enhanced) #sidebar-dimmer {
+  display: none !important;
+}
+body:not(.is-home-enhanced) .main-inner {
+  width: calc(100vw - 48px) !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  padding: 36px 0 72px !important;
+}
+body:not(.is-home-enhanced) .content-wrap {
+  width: 100% !important;
+  float: none !important;
+  margin: 0 !important;
+}
+body:not(.is-home-enhanced) .post-block {
+  margin: 0 auto;
+  padding: 38px 42px;
+}
+body:not(.is-home-enhanced) .post-title {
+  text-align: center;
+}
+body:not(.is-home-enhanced) .post-meta {
+  justify-content: center;
+}
+body:not(.is-home-enhanced) .post-title,
+body:not(.is-home-enhanced) .post-title-link,
+body:not(.is-home-enhanced) .post-body h1,
+body:not(.is-home-enhanced) .post-body h2,
+body:not(.is-home-enhanced) .post-body h3,
+body:not(.is-home-enhanced) .post-body h4,
+body:not(.is-home-enhanced) .post-meta,
+body:not(.is-home-enhanced) .post-meta-item,
+body:not(.is-home-enhanced) .post-body p,
+body:not(.is-home-enhanced) .post-body li,
+body:not(.is-home-enhanced) .post-body strong,
+body:not(.is-home-enhanced) .post-body a,
+body:not(.is-home-enhanced) .menu-item a,
+body:not(.is-home-enhanced) .site-title,
+body:not(.is-home-enhanced) .site-subtitle {
+  color: #4a3a34 !important;
+}
+body:not(.is-home-enhanced) .post-body hr {
+  border-top-color: rgba(92,67,56,0.12);
+}
+body:not(.is-home-enhanced) .post-body a {
+  border-bottom-color: rgba(135,85,62,0.2);
+}
+body:not(.is-home-enhanced) .sidebar-inner,
+body:not(.is-home-enhanced) .header {
+  background: rgba(18,12,11,0.72);
 }
 @-moz-keyframes home-moving-borders {
   0% {

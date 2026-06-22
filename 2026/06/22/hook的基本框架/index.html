@@ -22,30 +22,42 @@
     var CONFIG = {"hostname":"b0rnto1ove.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="好事多磨">
-<meta property="og:type" content="website">
-<meta property="og:title" content="b0rnto1ove">
-<meta property="og:url" content="https://b0rnto1ove.github.io/index.html">
+  <meta name="description" content="elf须知hook之前先了解elf文件结构   https:&#x2F;&#x2F;www.yuque.com&#x2F;g&#x2F;borntolove&#x2F;wggsn3&#x2F;mycl792m220cuvl4&#x2F;collaborator&#x2F;join?token&#x3D;kvyvkHZcBsFMtrPZ&amp;source&#x3D;doc_collaborator# 《elf文件解析》 GOT全局偏移表PTL程序链接表 链接，链接过程就是把一个或者多个.o文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hook的基本框架">
+<meta property="og:url" content="https://b0rnto1ove.github.io/2026/06/22/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6/index.html">
 <meta property="og:site_name" content="b0rnto1ove">
-<meta property="og:description" content="好事多磨">
+<meta property="og:description" content="elf须知hook之前先了解elf文件结构   https:&#x2F;&#x2F;www.yuque.com&#x2F;g&#x2F;borntolove&#x2F;wggsn3&#x2F;mycl792m220cuvl4&#x2F;collaborator&#x2F;join?token&#x3D;kvyvkHZcBsFMtrPZ&amp;source&#x3D;doc_collaborator# 《elf文件解析》 GOT全局偏移表PTL程序链接表 链接，链接过程就是把一个或者多个.o文件">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-764af467a1a7.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-493dd2b5b13d.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-fb32964d19f5.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-eebbe7edd926.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-63ac5d89bbe5.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-5578d3b0369f.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-cd13764851a9.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-5d04488b8d4d.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-fb63d2961a3b.png">
+<meta property="article:published_time" content="2026-06-22T05:13:29.000Z">
+<meta property="article:modified_time" content="2026-06-22T05:30:05.893Z">
 <meta property="article:author" content="b0rnto1ove">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://b0rnto1ove.github.io/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-764af467a1a7.png">
 
-<link rel="canonical" href="https://b0rnto1ove.github.io/">
+<link rel="canonical" href="https://b0rnto1ove.github.io/2026/06/22/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>b0rnto1ove</title>
+  <title>hook的基本框架 | b0rnto1ove</title>
   
 
 
@@ -164,289 +176,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://b0rnto1ove.github.io/2026/06/22/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="b0rnto1ove">
-      <meta itemprop="description" content="好事多磨">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="b0rnto1ove">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/06/22/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">安卓中的ClassLoader机制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2026-06-22 13:14:13 / 修改时间：13:30:10" itemprop="dateCreated datePublished" datetime="2026-06-22T13:14:13+08:00">2026-06-22</time>
-            </span>
-
-          
-
-        </div>
-      </header>
 
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="claAndroid中的ClassLoader分为系统类加载器和自定义加载器"><a href="#claAndroid中的ClassLoader分为系统类加载器和自定义加载器" class="headerlink" title="claAndroid中的ClassLoader分为系统类加载器和自定义加载器:"></a><font style="color:rgb(0, 0, 0);">claAndroid中的ClassLoader分为系统类加载器和自定义加载器:</font></h2><ul>
-<li><font style="color:rgb(0, 0, 0);">系统类加载器</font></li>
-</ul>
-<p><font style="color:rgb(0, 0, 0);">包括 BootClassLoader, PathClassLoader, DexClassLoader等</font></p>
-<ul>
-<li><font style="color:rgb(0, 0, 0);">自定义加载器</font></li>
-</ul>
-<p><font style="color:rgb(0, 0, 0);">通过继承BaseDexClassLoader实现,它们的继承关系如图所示:</font></p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-a133557feeaf.png"></p>
-<ol>
-<li><font style="color:rgb(0, 0, 0);">ClassLoader</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">抽象类,定义了ClassLoader的主要功能.</font></p>
-<ol start="2">
-<li><font style="color:rgb(0, 0, 0);">BootClassLoader</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">继承自ClassLoader,用于Android系统启动时预加载常用类.</font></p>
-<ol start="3">
-<li><font style="color:rgb(0, 0, 0);">SecureClassLoader</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">继承自ClassLoader扩展了类权限方面的功能,加强了安全性.</font></p>
-<ol start="4">
-<li><font style="color:rgb(0, 0, 0);">URLClassLoader</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">继承自SecureClassLoader,用于通过URL路径加载类和资源.</font></p>
-<ol start="5">
-<li><font style="color:rgb(0, 0, 0);">BaseDexClassLoader</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">继承自ClassLoader,是抽象类ClassLoader的具体实现类.</font></p>
-<ol start="6">
-<li><font style="color:rgb(0, 0, 0);">InMemoryDexClassLoader（Android8.0新增）</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">继承自BaseDexClassLoader,用于加载内存中的dex文件.</font></p>
-<ol start="7">
-<li><font style="color:rgb(0, 0, 0);">PathClassLoader</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">继承自BaseDexClassLoader,用于加载已安装的apk的dex文件.</font></p>
-<ol start="8">
-<li><font style="color:rgb(0, 0, 0);">DexClassLoader</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">继承自BaseDexClassLoader,用于加载已安装的apk的dex文件,以及从SD卡中加载未安装的apk的dex文件.</font></p>
-<p><font style="color:rgb(0, 0, 0);">实现安卓加固时，壳程序动态加载被保护程序的dex文件主要使用以下3个类加载器</font></p>
-<p><strong><font style="color:rgb(0, 0, 0);">1.dexclassloader可以加载未安装apk的dex文件（一代壳落地加载的核心）</font></strong></p>
-<p><strong><font style="color:rgb(0, 0, 0);">2.inmemorydexclassloader加载内存中的dex文件（二代壳不落地加载的核心）</font></strong></p>
-<p><strong><font style="color:rgb(0, 0, 0);">3.basedexclassloader是classloader的具体实现类实际上dexclassloader，pathclassloader以及inmemorydexclassloader加载类时，均通过委托BaseDexClassLoader实现</font></strong></p>
-<h2 id="classloader加载dex流程"><a href="#classloader加载dex流程" class="headerlink" title="classloader加载dex流程"></a><font style="color:rgb(0, 0, 0);">classloader加载dex流程</font></h2><p><font style="color:rgb(0, 0, 0);">Dex文件的加载依赖于前文提到的PathClassLoader,DexClassLoader和InMemoryDexClassLoader</font></p>
-<p><font style="color:rgb(0, 0, 0);">加载Dex文件的功能均通过委托父加载器BaseDexClassLoader实现.其中PathClassLoader和DexClassLoader调用相同的BaseDexClassLoader构造函数,InMemoryDexClassLoader调用另一个构造函数</font></p>
-<p><font style="color:rgb(0, 0, 0);">最终通过ArtDexFileLoader::OpenCommon方法在ART虚拟机中创建DexFile::DexFile对象,该对象是Dex文件在内存中的表示,用于安卓程序运行时加载类以及执行方法代码,也是后续第三代加固——代码抽取加固,进行指令回填时的关键对象.</font></p>
-<h3 id="1Java层"><a href="#1Java层" class="headerlink" title="1Java层"></a><font style="color:rgb(0, 0, 0);">1Java层</font></h3><h4 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a><font style="color:rgb(0, 0, 0);">双亲委派模型</font></h4><!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-0075973d6c59.png"></p>
-<p>加载.class文件,以递归的形式逐级向上委托父加载器加载，如果加载过了就不再加载一遍</p>
-<p>如果父加载器没有加载过，继续委托给父加载器去加载，一直到这条链路的顶级，如果classloader没有加载过则尝试加载，尝试失败则逐级向下交还调用者加载（下一级）</p>
-<p><strong>作用：防止同一个.class文件重复加载；</strong><font style="color:rgb(51, 51, 51);">对于任意一个类确保在虚拟机中的唯一性.由</font><strong><font style="color:rgb(145, 109, 213);">加载它的类加载器</font></strong><font style="color:rgb(51, 51, 51);">和这个</font><strong><font style="color:rgb(145, 109, 213);">类的全类名一同确立其在Java虚拟机中的</font></strong><font style="color:rgb(51, 51, 51);">唯一性；保证.class文件不被篡改，加载逻辑不被改变</font></p>
-<p><strong><font style="color:rgb(0, 0, 0);">PathClassLoader和DexClassLoader委托BaseDexClassLoader最终执行JNI方法DexFile.openDexFileNative进入Native层.</font></strong></p>
-<p><strong><font style="color:rgb(0, 0, 0);">而InMemoryDexClassLoader委托BaseDexClassLoader后则执行DexFile.openInMemoryDexFiles进入Native层.</font></strong></p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-87c12fd7d5b4.png"></p>
-<p><font style="color:rgb(0, 0, 0);">BaseDexClassLoader.findClass调用DexPathList.findClass,其内部调用Element.findClass,最终调用DexFile.loadClassBinaryName进入DexFile中,该流程如图所示:</font></p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-07a37a05e6cb.png"></p>
-<p><font style="color:rgb(0, 0, 0);">进入DexFile后,主要执行以下操作:</font></p>
-<ol>
-<li><font style="color:rgb(0, 0, 0);">DexFile</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">通过JNI函数defineClassNative进入Native层.</font></p>
-<ol start="2">
-<li><font style="color:rgb(0, 0, 0);">DexFile_defineClassNative</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">通过FindClassDef枚举DexFile的所有DexClassDef结构并使用ClassLinker::DefineClass创建对应的Class对象.</font></p>
-<p><font style="color:rgb(0, 0, 0);">之后调用ClassLinker::InsertDexFileInToClassLoader将对应的DexFile对象添加到ClassLoader的ClassTable中.</font></p>
-<ol start="3">
-<li><font style="color:rgb(0, 0, 0);">ClassLinker::DefineClass</font></li>
-</ol>
-<p><font style="color:rgb(0, 0, 0);">调用LoadField加载类的相关字段,之后调用LoadMethod加载方法,再调用LinkCode执行方法代码的链接.</font></p>
-<p><font style="color:rgb(0, 0, 0);">该流程如图所示:</font><!-- 这是一张图片，ocr 内容为： --><br><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-33dc06447927.png"></p>
-<p><font style="color:rgb(0, 0, 0);">综上所述,ClassLoader最终通过ClassLinker::DefineClass创建Class对象,并完成Field和Method的加载以及Code的链接.</font></p>
-<p><font style="color:rgb(0, 0, 0);">调用链中有一个核心函数——ClassLinker::LoadMethod,通过该函数可以获取方法字节码在DexFile中的偏移值code_off,它是实现指令回填的核心之一</font></p>
-<h3 id="2-native层"><a href="#2-native层" class="headerlink" title="2.native层"></a><font style="color:rgb(51, 51, 51);">2.native层</font></h3><p><strong><font style="color:rgb(0, 0, 0);">PathClassLoader和DexClassLoader这条委托链会根据不同情况,调用ArtDexFileLoader::Open的不同重载,或者调用OpenOneDexFileFromZip.</font></strong></p>
-<p><strong><font style="color:rgb(0, 0, 0);">InMemoryDexClassLoader调用ArtDexFileLoader::Open的第3种重载.</font></strong></p>
-<p><strong><font style="color:rgb(0, 0, 0);">无论是调用哪个函数,最终都会调用ArtDexFileLoader::OpenCommon.</font></strong></p>
-<h3 id=""><a href="#" class="headerlink" title=""></a><!-- 这是一张图片，ocr 内容为： --></h3><p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-26e80f57240c.png"><font style="color:rgb(51, 51, 51);"><br></font><font style="color:rgb(51, 51, 51);"> </font><br><font style="color:rgb(0, 0, 0);">经过以上调用流程后进入ArtDexFileLoader::OpenCommon,经过DexFile的初始化和验证操作后便成功创建了DexFile对象:</font></p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-c4216daec504.png"></p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6-eb9e29e89e4d.png"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://b0rnto1ove.github.io/2026/06/22/Xposed%E6%A1%86%E6%9E%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="b0rnto1ove">
-      <meta itemprop="description" content="好事多磨">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="b0rnto1ove">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/06/22/Xposed%E6%A1%86%E6%9E%B6/" class="post-title-link" itemprop="url">Xposed框架</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2026-06-22 13:13:53 / 修改时间：13:30:08" itemprop="dateCreated datePublished" datetime="2026-06-22T13:13:53+08:00">2026-06-22</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="链接andorid运行机制"><a href="#链接andorid运行机制" class="headerlink" title="链接andorid运行机制"></a><a href="about:blank">链接</a>andorid运行机制</h1><h2 id="1-Android平台架构"><a href="#1-Android平台架构" class="headerlink" title="1.Android平台架构"></a>1.Android平台架构</h2><!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-e7e9b1990dd7.png"></p>
-<h3 id="linux内核"><a href="#linux内核" class="headerlink" title="linux内核"></a>linux内核</h3><p>android平台运行的基础是linux内核，android Runtime（ART）依靠linux内核实现底层功能，使用linux内核可以让Android利用主要安全功能，并且运行设备制造商为著名的内核开发硬件程序驱动，可以理解基于linux内核让Android更安全</p>
-<h3 id="硬件抽象层（HAL）"><a href="#硬件抽象层（HAL）" class="headerlink" title="硬件抽象层（HAL）"></a>硬件抽象层（HAL）</h3><p>Hal提供标准界面，向更高级的JAVA API框架显示设备硬件功能，HAL包含多个模块，其中每个模块都为特定类型的硬件组成实现的一个界面，例如蓝牙和相机模块，当框架api要访问设备硬件时，Android系统为硬件组件加载模块</p>
-<h3 id="Android-Runtime"><a href="#Android-Runtime" class="headerlink" title="Android Runtime"></a>Android Runtime</h3><p><font style="color:rgb(0, 0, 0);">Android 5.0之前Android Runtime为Dalvik，Android 5.0之后Android Runtime为ART</font></p>
-<p><font style="color:rgb(0, 0, 0);">了解android的演变，Dalvik和ART的区别</font><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903748058218509">https://juejin.cn/post/6844903748058218509</a></p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-33612bed8107.png"></p>
-<p>（1）dex文件：Android将所有的class文件打包形成一个dex文件，是Dalvik运行的程序</p>
-<p><font style="color:rgb(0, 0, 0);">（2）odex文件：优化过的dex文件，Apk在安装时会进行验证和优化，通过dexopt生成odex文件，加快Apk的响应时间</font></p>
-<p><font style="color:rgb(0, 0, 0);">（3）oat文件：Android私有ELF文件格式，有dex2oat处理生成，包含（原dex文件+dex翻译的本地机器指令），是ART虚拟机使用的文件，可以直接加载 </font></p>
-<p><font style="color:rgb(0, 0, 0);">（4）vdex文件：Android 8.0引入，包含APK的未压缩DEX代码，以及一些旨在加快验证速度的元数据</font></p>
-<h4 id="Android-2-2"><a href="#Android-2-2" class="headerlink" title="Android 2.2"></a><font style="color:rgb(0, 0, 0);">Android 2.2</font></h4><h5 id="Dalvik"><a href="#Dalvik" class="headerlink" title="Dalvik"></a>Dalvik</h5><p>支持已转换成dex文件格式的Android应用，基于寄存器，指令执行更快，加载的是odex文件，采用JIT运行时编译</p>
-<h5 id="JIT"><a href="#JIT" class="headerlink" title="JIT"></a>JIT</h5><p>jit就是运行时编译，理解成运行的编译器，为了加快Dalvik虚拟机解释dex文件速度，运行时动态地将执行频率很高的dex字节码转化成本地机器码</p>
-<p>缺点每次启动应用都要重新编译，运行时耗电；dex加载时会触发dexopt，导致Multidex加载非常慢</p>
-<h4 id="Android-5-0"><a href="#Android-5-0" class="headerlink" title="Android 5.0"></a>Android 5.0</h4><h5 id="AOT"><a href="#AOT" class="headerlink" title="AOT"></a>AOT</h5><p>运行前编译，应用在安装前会启动dex2oat过程把dex预编译成elf文件，每次运行程序的时候不用重新编译</p>
-<p>缺点，安装AOT时触发dex2oat,需要编译成native code，安装时间长；dex2oat生成的文件体积大占内存</p>
-<h5 id="jvm和jit和aot的区别"><a href="#jvm和jit和aot的区别" class="headerlink" title="jvm和jit和aot的区别"></a>jvm和jit和aot的区别</h5><p>JVM：传统的Java虚拟机、基于栈、运行class文件</p>
-<p>Dalvik:支持已转换成dex格式的android应用，基于寄存器，指令执行更快,加载的是odex（优化的dex） </p>
-<p>ART:第一次安装时，将dex进行Aot(预编译)，字节码预先编译成机器码，生成可执行oat文件（ELF文件）</p>
-<h4 id="Android-7-0"><a href="#Android-7-0" class="headerlink" title="Android 7.0"></a>Android 7.0</h4><h5 id="AOT-JIT-解释器"><a href="#AOT-JIT-解释器" class="headerlink" title="AOT+JIT+解释器"></a>AOT+JIT+解释器</h5><p>1.应用安装的时候dex不会被编译</p>
-<p>2.应用在运行时dex文件先通过解析器后会被直接执行，与此同时热点函数（频繁调用，执行次数很高的）会被识别并被jit编译后存储在jit code cache 中并生成profile文件以记录热点函数的信息</p>
-<p>3手机空闲的时候，系统会扫描app目录下的profile文件并执行AOT过程进行编译</p>
-<h5 id="Dalvik与ART的区别"><a href="#Dalvik与ART的区别" class="headerlink" title="Dalvik与ART的区别"></a>Dalvik与ART的区别</h5><p>Dalvik是运行时编译，ART是运行前编译</p>
-<p>Dalvik每次运行前都会将执行频繁的dex文件编译为机器码，ART在安装时编译，把程序代码转换成机器语言存储在本地</p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-3a2823c4e0e4.png"></p>
-<p>java方法-&gt;dex字节码-&gt;art判断有没有编译好的quick code-&gt;有直接执行机器码，没有解释器解析执行-&gt; 频繁执行后JIT编译</p>
-<h2 id="2Android启动流程"><a href="#2Android启动流程" class="headerlink" title="2Android启动流程"></a>2Android启动流程</h2><!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-043b5b13ca37.png"></p>
-<h3 id="Loader"><a href="#Loader" class="headerlink" title="Loader"></a>Loader</h3><p>Boot ROM手机处于关机状态时，长按Power键开机，引导芯片开始从固化在ROM（ 非易失性存储  ，断电后不会丢失）里的预设代码开始执行，然后加载引导程序到RAM（ 运行时内存  ）</p>
-<p>Boot Loader 这是启动Android系统之间的引导程序，主要是检查RAM，初始化硬件参数，拉起Android OS</p>
-<p>长按电源后，手机就会在loader层加载引导程序，并启动引导程序，初始化参数，</p>
-<h3 id="linux内核-1"><a href="#linux内核-1" class="headerlink" title="linux内核"></a>linux内核</h3><p>启动Kernel（内核）的swapper进程（pid&#x3D;0）；该进程又称为idle进程，系统初始化过程Kernel由无到有开创的第一个进程，由于初始化进程管理。内存管理，加载Display，Camera Driver，Binder Driver等相关工作，这些模块驱动都会封装到相应的HAL（模块）层中</p>
-<p>启动ini进程。pid&#x3D;1，用来孵化用户空间的守护进程，HAL，开机动画</p>
-<p>启动kthreadd（内核线程管理者）进程pid&#x3D;2，是linux系统的内核进程，会创建内核工作线程kworkder，软中断线程ksoftirqd（具体干活的线程），thermal等内核守护进程，kthreadd进程是所有内核的鼻祖</p>
-<h3 id="执行init进程"><a href="#执行init进程" class="headerlink" title="执行init进程"></a>执行init进程</h3><p>Linux Kernel完成系统设置后，会首先在系统中寻找init.rc 文件，并启动init进程，init.rc脚本存放路径</p>
-<p><font style="color:#000000;">&#x2F;system&#x2F;core&#x2F;rootdir&#x2F;init.rc，init进程&#x2F;system&#x2F;core&#x2F;init</font></p>
-<h4 id="init进程"><a href="#init进程" class="headerlink" title="init进程"></a><font style="color:#000000;">init进程</font></h4><p>（1）init进程会孵化出ueventd、logd、healthd、installd、adbd、lm这里写代码片kd等用户守护进程</p>
-<p>（2）init进程还会启动ServiceManager(Binder服务管家)、bootanim(开机动画)等重要服务</p>
-<p>（3）解析init.rc配置文件并孵化zygote进程**,****<u>Zygote进程是Android系统的第一个java进程（虚拟机进程）</u><strong><u>，</u></strong><u>zygote进程是所以Java进程的父进程</u>**</p>
-<h4 id="zygote"><a href="#zygote" class="headerlink" title="zygote"></a><font style="color:rgb(0, 0, 0);">zygote</font></h4><h5 id="创建zygote过程"><a href="#创建zygote过程" class="headerlink" title="创建zygote过程"></a>创建zygote过程</h5><p>（1）解析 init.zygote.rc &#x2F;&#x2F;parse_service()</p>
-<p><font style="color:#000000;">（2）启动 main 类型服务 &#x2F;&#x2F;do_class_start()</font></p>
-<p><font style="color:#000000;">（3）启动 zygote 服务 &#x2F;&#x2F;service_start()</font></p>
-<p><font style="color:#000000;">（4）创建 Zygote 进程 &#x2F;&#x2F;fork() </font></p>
-<p><font style="color:#000000;">（5）创建 Zygote Socket &#x2F;&#x2F;create_socket()</font></p>
-<p><font style="color:#000000;">Zygote为孵化器，即所有Android应用的祖先，Zygote让vm共享代码，低内存占用以及最小的启动时间成为可能，Zygote是一个虚拟机进程，Zygote是init进程通过解析init.zygote.rc文件而创建的，zygote所对应的app_process，所对应的源文件是App_main.cpp进程是zygote</font></p>
-<h5 id="作用"><a href="#作用" class="headerlink" title="作用"></a><font style="color:#000000;">作用</font></h5><p>(1)解析init.zygote.rc中的参数，创建AppRuntime并调用AppRuntime.start()方法；</p>
-<p>(2)调用AndroidRuntime的startVM()方法创建虚拟机，再调用startReg()注册JNI函数；</p>
-<p>(3)通过JNI方式调用ZygoteInit.main()，第一次进入Java世界；</p>
-<p>(4)registerZygoteSocket()建立socket通道，zygote作为通信的服务端，用于响应客户端请求；</p>
-<p>(5)preload()预加载通用类、drawable和color资源、openGL以及共享库以及WebView，用于提高app启动效率；</p>
-<p>(6)zygote完毕大部分工作，接下来再通过startSystemServer()，fork得力帮手system_server进程，也是上层framework的运行载体。 </p>
-<p>(7)zygote功成身退，调用runSelectLoop()（死循环），随时待命，当接收到请求创建新进程请求时立即唤醒并执行相应工作。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><font style="color:#000000;">总结</font></h3><p>(1) 手机开机后，引导芯片启动，引导芯片开始从固化在ROM里的预设代码执行，加载引导程序到到RAM，BootLoader检查RAM，初始化硬件参数等功能；</p>
-<p>(2) 硬件等参数初始化完成后，进入到Kernel层，Kernel层主要加载一些硬件设备驱动，初始化进程管理等操作。在Kernel中首先启动swapper进程（pid&#x3D;0），用于初始化进程管理、内管管理、加载Driver等操作，再启动kthread进程(pid&#x3D;2),这些linux系统的内核进程，kthread是所有内核进程的鼻祖；</p>
-<p>(3) Kernel层加载完毕后，硬件设备驱动与HAL层进行交互。初始化进程管理等操作会启动init进程 ，这些在Native层中；</p>
-<p>(4) init进程(pid&#x3D;1，init进程是所有进程的鼻祖，第一个启动)启动后，会启动adbd，logd等用户守护进程，并且会启动servicemanager(binder服务管家)等重要服务，同时孵化出zygote进程，这里属于C++ Framework，代码为C++程序； </p>
-<p>(5) zygote进程是由init进程解析init.rc文件后fork生成，它会加载虚拟机，启动System Server(zygote孵化的第一个进程)；SystemServer负责启动和管理整个Java Framework，包含ActivityManager，WindowManager，PackageManager，PowerManager等服务； </p>
-<p>(6) zygote同时会启动相关的APP进程，它启动的第一个APP进程为Launcher，然后启动Email，SMS等进程，所有的APP进程都有zygote fork生成。</p>
-<h2 id="Xposed框架运行机制"><a href="#Xposed框架运行机制" class="headerlink" title="Xposed框架运行机制"></a>Xposed框架运行机制</h2><h3 id="xposed实现原理"><a href="#xposed实现原理" class="headerlink" title="xposed实现原理"></a>xposed实现原理</h3><p>替换Android中的虚拟机art，替换app_process以及生成的一些lib，bin文件</p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-fc9b200b61ac.png"><!-- 这是一张图片，ocr 内容为： --><br><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-1ede6b4a5494.png"></p>
-<p>初始化虚拟机后，xposed会对虚拟机进行修改，函数onVmcreate（env），在这个函数里通过dlopen加载libxposed_art.so,</p>
-<p>初始化xposed相关库xposedInitLLib</p>
-<p>xposedInitLLib-&gt;onVMcreatedCommon-&gt;initXposedBridge,初始化XposedBridge，讲register_native_XposedBridge中的函数注册为native方法</p>
-<p>XposeInitLib-&gt;onVMcreatedCommon-&gt;onVmcreated,为xposed_callback_class类和xposed_callback_methon方法赋值</p>
-<p>虚拟机初始化完成后，会调用传入的de.robv.android.xposed.XposedBridge类，初始化java层XposedBridge.jar，调用main函数</p>
-<p>（1）hook 系统资源相关的方法 XposedInit.hookResources() </p>
-<p>（2）hook zygote 的相关方法 XposedInit.initForZygote() </p>
-<p>（3）加载系统中已经安装的xposed 模块 XposedInit.loadModules()</p>
-<p>Xposed的基本原理是修改了ART&#x2F;Davilk虚拟机，将需要hook的函数注册为Native层函数。当执行到这一函数是虚拟机会优先执行Native层函数，然后再去执行Java层函数，这样完成函数的hook</p>
-<p>（1）手机启动时init进程会启动zygote这个进程。由于zygote进程文件app_process已被替换，所以启动的时Xposed版的zygote进程</p>
-<p>（2）Xposed_zygote进程启动后会初始化一些so文件（system&#x2F;lib system&#x2F;lib64），然后进入XposedBridge.jar中的XposedBridge.main中初始化jar包完成对一些关键Android系统函数的hook</p>
-<p>（3）Hook则是利用修改过的虚拟机将函数注册为native函数 </p>
-<p>（4）然后再返回zygote中完成原本zygote需要做的工作</p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-5ff71aec5a76.png"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -462,10 +195,9 @@
       <meta itemprop="name" content="b0rnto1ove">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/06/22/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6/" class="post-title-link" itemprop="url">hook的基本框架</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          hook的基本框架
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -489,7 +221,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="elf须知"><a href="#elf须知" class="headerlink" title="elf须知"></a>elf须知</h1><p>hook之前先了解elf文件结构</p>
+        <h1 id="elf须知"><a href="#elf须知" class="headerlink" title="elf须知"></a>elf须知</h1><p>hook之前先了解elf文件结构</p>
 <!-- 这是一张图片，ocr 内容为： -->
 <p><img src="/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-764af467a1a7.png"><!-- 这是一张图片，ocr 内容为： --><br><img src="/images/posts/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6-493dd2b5b13d.png"></p>
 <p><a target="_blank" rel="noopener" href="https://www.yuque.com/g/borntolove/wggsn3/mycl792m220cuvl4/collaborator/join?token=kvyvkHZcBsFMtrPZ&source=doc_collaborator#">https://www.yuque.com/g/borntolove/wggsn3/mycl792m220cuvl4/collaborator/join?token=kvyvkHZcBsFMtrPZ&amp;source=doc_collaborator#</a> 《elf文件解析》</p>
@@ -674,336 +406,33 @@
 
 <p>所以我个人觉得unicore是不能hook真实运行程序中的逻辑</p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://b0rnto1ove.github.io/2026/06/22/dex%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="b0rnto1ove">
-      <meta itemprop="description" content="好事多磨">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="b0rnto1ove">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/06/22/dex%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">dex文件解析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2026-06-22 13:13:00 / 修改时间：13:30:03" itemprop="dateCreated datePublished" datetime="2026-06-22T13:13:00+08:00">2026-06-22</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/dex%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90-239bd8e141aa.png"></p>
-<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><table>
-<thead>
-<tr>
-<th align="left"><font style="color:rgba(0, 0, 0, 0.87);">byte</font></th>
-<th align="left"><font style="color:rgba(0, 0, 0, 0.87);">8 位有符号整数</font></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">ubyte</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">8 位无符号整数</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">short</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">16 位有符号整数，采用小端字节序</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">ushort</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">16 位无符号整数，采用小端字节序</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">int</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">32 位有符号整数，采用小端字节序</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">32 位无符号整数，采用小端字节序</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">long</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">64 位有符号整数，采用小端字节序</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">ulong</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">64 位无符号整数，采用小端字节序</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">sleb128</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">有符号 LEB128，可变长度（见下文）</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uleb128</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">无符号 LEB128，可变长度（见下文）</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uleb128p1</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">无符号 LEB128 加</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;1&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">，可变长度（见下文）</font></td>
-</tr>
-</tbody></table>
-<h2 id="无符号LEB128（32位大小的int数字）"><a href="#无符号LEB128（32位大小的int数字）" class="headerlink" title="无符号LEB128（32位大小的int数字）"></a>无符号LEB128（32位大小的int数字）</h2><p>取后7位数据</p>
-<p>eg：d1（1101 0001）后7位101 0001就是 0x51</p>
-<pre><code>    c2（1100 0010）后7位100 0010就是0x42
-</code></pre>
-<h2 id="有符号LEB128"><a href="#有符号LEB128" class="headerlink" title="有符号LEB128"></a>有符号LEB128</h2><p>先是取后7位</p>
-<p>再把后7位拼起来</p>
-<p>eg：d1（1101 0001）后7位101 0001就是 0x51</p>
-<pre><code>    c2（1100 0010）后7位100 0010就是0x42
-
-   b3（1011 0011）后7位011 0011就是0x33
-
-   40（0100 0000）后7位100 0000就是0x40
-</code></pre>
-<p>按顺序排好</p>
-<p> [第四块: 1000000] [第三块: 0110011] [第二块: 1000010] [第一块: 1010001]  </p>
-<p> 合体后的二进制（共 28 位）：<br><code>1000000</code> + <code>0110011</code> + <code>1000010</code> + <code>1010001</code><br>转化为十六进制就是：<code>**0x80CE151**</code></p>
-<p><strong>最后要补齐到32位</strong></p>
-<p><code>**0x80CE151**</code>** 在 32 位寄存器里  的样子**</p>
-<p><code>**0000 1000 0000 1100 1110 0001 0101 0001**</code>** (最前面四个 0 是空出来的)  **</p>
-<ol>
-<li>左移 4 位 (<code>&lt;&lt; 4</code>)</li>
-</ol>
-<p>目的是把那个“符号位”（第 28 位的 <code>1</code>）顶到 32 位寄存器的最顶端（第 32 位）。</p>
-<p>移位后：<code>1000 0000 1100 1110 0001 0101 0001 0000</code> (变成了 <code>0x80CE1510</code>)</p>
-<ol start="2">
-<li>有符号右移 4 位 (<code>&gt;&gt; 4</code>)</li>
-</ol>
-<p>这是最关键的一步！ 在 C 语言中，对一个有符号整数进行右移，顶部会补齐符号位。</p>
-<p>因为现在最顶端是 <code>1</code>，所以右移 4 位时，系统会自动在前面补 4 个 <code>1</code>。</p>
-<p>移位后：<code>1111``1000 0000 1100 1110 0001 0101 0001</code></p>
-<p>结果：<code>0xF80CE151</code></p>
-<h2 id="uleb128p1-Plus-1-魔法"><a href="#uleb128p1-Plus-1-魔法" class="headerlink" title="uleb128p1 (Plus 1 魔法)"></a>uleb128p1 (Plus 1 魔法)</h2><p>这个类型主要解决一个尴尬的问题：<strong>如何用无符号数表示 -1？</strong></p>
-<p>在 DEX 文件里，很多索引（Index）如果没找到，会返回 <code>-1</code>。但 uleb128 是无符号的，存不了负数。<br><strong>uleb128p1 的逻辑是：</strong><br>保存的值&#x3D;真实值+1保存的值 &#x3D; 真实值 + 1保存的值&#x3D;真实值+1</p>
-<ul>
-<li>如果你想存<code>-1</code>：−1+1&#x3D;0-1 + 1 &#x3D; 0−1+1&#x3D;0。只需要 1 个字节 <code>00</code> 就能存下。</li>
-<li>如果你想存 <code>0</code>：0+1&#x3D;10 + 1 &#x3D; 10+1&#x3D;1。存为 <code>01</code>。</li>
-<li>如果你想存 <code>100</code>：存为 <code>101</code>。</li>
-</ul>
-<p><strong>为什么要这么折腾？</strong> 主要是为了空间。在很多地方，<code>-1</code> 出现的频率极高。如果用传统的有符号存储，可能需要多个字节，而用 <code>p1</code> 方案，<code>-1</code> 只需要 <strong>1 个字节</strong> 就能搞定。</p>
-<!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/dex%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90-c83251e84d31.png"><!-- 这是一张图片，ocr 内容为： --><br><img src="/images/posts/dex%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90-d8890aa380a3.png"></p>
-<h1 id="文件头"><a href="#文件头" class="headerlink" title="文件头"></a>文件头</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexHeader</span> &#123;</span></span><br><span class="line">    u1  magic[<span class="number">8</span>];           <span class="comment">/* includes version number */</span></span><br><span class="line">    u4  checksum;           <span class="comment">/* adler32 checksum */</span></span><br><span class="line">    u1  signature[kSHA1DigestLen]; <span class="comment">/* SHA-1 hash */</span></span><br><span class="line">    u4  fileSize;           <span class="comment">/* length of entire file */</span></span><br><span class="line">    u4  headerSize;         <span class="comment">/* offset to start of next section */</span></span><br><span class="line">    u4  endianTag;</span><br><span class="line">    u4  linkSize;</span><br><span class="line">    u4  linkOff;</span><br><span class="line">    u4  mapOff;</span><br><span class="line">    u4  stringIdsSize;</span><br><span class="line">    u4  stringIdsOff;</span><br><span class="line">    u4  typeIdsSize;</span><br><span class="line">    u4  typeIdsOff;</span><br><span class="line">    u4  protoIdsSize;</span><br><span class="line">    u4  protoIdsOff;</span><br><span class="line">    u4  fieldIdsSize;</span><br><span class="line">    u4  fieldIdsOff;</span><br><span class="line">    u4  methodIdsSize;</span><br><span class="line">    u4  methodIdsOff;</span><br><span class="line">    u4  classDefsSize;</span><br><span class="line">    u4  classDefsOff;</span><br><span class="line">    u4  dataSize;</span><br><span class="line">    u4  dataOff;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th align="left"><font style="color:rgba(0, 0, 0, 0.87);">magic</font></th>
-<th align="left"><font style="color:rgba(0, 0, 0, 0.87);">ubyte[8] &#x3D; DEX_FILE_MAGIC</font></th>
-<th align="left"><font style="color:rgba(0, 0, 0, 0.87);">标识 DEX 文件，其中 DEX_FILE_MAGIC &#x3D;”dex\n035\0”</font></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">checksum</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">除</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;magic&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">和此字段之外的文件剩下内容的 adler32 校验和，用于检测文件损坏情况</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">signature</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">ubyte[20]</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">除</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;magic&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">、</font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;checksum&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">和此字段之外的文件的内容的 SHA-1 签名（哈希），用于对文件进行唯一标识</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">file_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">整个文件（包括文件头）的大小，以字节为单位</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">header_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint &#x3D; 0x70</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">文件头的大小，以字节为单位。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">endian_tag</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint &#x3D; ENDIAN_CONSTANT</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">字节序标记，大端序或者小端序。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">link_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">如果此文件未进行静态链接，则该值为</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">，反之为链接区段的大小，</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">link_off</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">如果</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;link_size == 0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">，则该值为</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">； 反之，该偏移量是文件开头到到</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;link_data&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">区段的偏移量。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">map_off</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">该偏移量必须非零，标识从文件开头到</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;data&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">区段的偏移量。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">string_ids_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">字符串标识符列表中的字符串数量</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">string_ids_off</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">如果</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;string_ids_size == 0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">（不可否认是一种奇怪的极端情况），则该值为</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">； 反之表示从文件开头到</font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;string_ids&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">的偏移量。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">type_ids_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">类型标识符列表中的元素数量，最大为 65535</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">type_ids_off</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">如果</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;type_ids_size == 0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">（不可否认是一种奇怪的极端情况），则该值为</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">； 反之表示从文件开头到</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;type_ids&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">区段开头的偏移量。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">proto_ids_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">原型（方法）标识符列表中的元素数量，最多为 65535</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">proto_ids_off</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">如果</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;proto_ids_size == 0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">（不可否认是一种奇怪的极端情况），则该值为</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">； 反之该偏移量表示文件开头到</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;proto_ids&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">区段开头的偏移量。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">field_ids_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">字段标识符列表中的元素数量</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">field_ids_off</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">如果</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;field_ids_size == 0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">，则该值为</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">； 反之该偏移量表示文件开头到</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;field_ids&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">区段开头的偏移量。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">method_ids_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">方法标识符列表中的元素数量</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">method_ids_off</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">如果</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;method_ids_size == 0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">，则该值为</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">。反之该偏移量表示从文件开头到</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;method_ids&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">区段开头的偏移量。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">class_defs_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">类定义列表中的元素数量</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">class_defs_off</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">如果</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;class_defs_size == 0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);">（不可否认是一种奇怪的极端情况），则该值为</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;0&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">；反之该偏移量表示文件开头到</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;class_defs&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">区段开头的偏移量。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">data_size</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;data&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">区段的以字节为单位的大小，必须是 sizeof(uint) 的偶数倍，说明 8 字节对齐。</font></td>
-</tr>
-<tr>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">data_off</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">uint</font></td>
-<td align="left"><font style="color:rgba(0, 0, 0, 0.87);">从文件开头到</font><font style="color:rgba(0, 0, 0, 0.87);"> </font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;data&lt;/font&gt;</code><br/><font style="color:rgba(0, 0, 0, 0.87);"> </font><font style="color:rgba(0, 0, 0, 0.87);">区段开头的偏移量。</font></td>
-</tr>
-</tbody></table>
-<h1 id="dex索引区"><a href="#dex索引区" class="headerlink" title="dex索引区"></a>dex索引区</h1><h2 id="string-id"><a href="#string-id" class="headerlink" title="string id"></a><font style="color:rgba(0, 0, 0, 0.87);">string id</font></h2><p><font style="color:rgba(0, 0, 0, 0.87);">StringIds 区段包含</font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;stringIdsSize&lt;/font&gt;</code><font style="color:rgba(0, 0, 0, 0.87);">个</font><code>&lt;font style=&quot;color:rgb(54, 70, 78);background-color:rgb(245, 245, 245);&quot;&gt;DexStringId&lt;/font&gt;</code><font style="color:rgba(0, 0, 0, 0.87);">结构，其结构如下：</font></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexStringId</span> &#123;</span></span><br><span class="line">    u4 stringDataOff;   <span class="comment">/* 字符串数据偏移，也就是数据区中各个 StringData 的文件偏移*/</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><font style="color:rgba(0, 0, 0, 0.87);">可以看出 DexStringId 中存储的只是每一个字符串的相对偏移。此外，每一个偏移占据 4 个字节，字符串部分一共会占据 4*stringIdsSize 个字节。</font></p>
-<p><font style="color:rgba(0, 0, 0, 0.87);">在对应的偏移处，字符串是使用 MUTF-8 格式存储的，其开头存储了之前我们所说的 LEB128 类型的变量，表示字符串的长度，之后紧跟着的就是字符串，之后以 \ x00 结尾，字符串的长度不包含 \ x00。</font></p>
-<h2 id="type-id"><a href="#type-id" class="headerlink" title="type id "></a><font style="color:rgba(0, 0, 0, 0.87);">type id </font></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexTypeId</span> &#123;</span></span><br><span class="line">    u4 descriptorIdx;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p> 这里的 <code>descriptorIdx</code> 指向的是  <code>DexStringId</code> 表中的某个字符串  </p>
-<p>eg:</p>
-<ul>
-<li><code>string_ids[10] = &quot;Ljava/lang/String;&quot;</code></li>
-<li><code>type_ids[3].descriptorIdx = 10</code></li>
-</ul>
-<p>那就表示：</p>
-<ul>
-<li><code>type_ids[3]</code> 这个类型 &#x3D; <code>Ljava/lang/String;</code></li>
-</ul>
-<h2 id="proto-id"><a href="#proto-id" class="headerlink" title="proto id"></a>proto id</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexProtoId</span> &#123;</span></span><br><span class="line">    u4 shortyIdx;       <span class="comment">/* 返回类型+参数类型，简写，指向DexStringId列表的索引 */</span></span><br><span class="line">    u4 returnTypeIdx;   <span class="comment">/* 返回类型，指向DexTypeId列表的索引 */</span></span><br><span class="line">    u4 parametersOff;   <span class="comment">/* 参数类型，指向DexTypeList的偏移 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexTypeList</span> &#123;</span></span><br><span class="line">    u4 size;             <span class="comment">/* DexTypeItem的个数，即参数个数 */</span></span><br><span class="line">    DexTypeItem <span class="built_in">list</span>[<span class="number">1</span>]; <span class="comment">/* 指向DexTypeItem开始处 */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexTypeItem</span> &#123;</span></span><br><span class="line">    u2 typeIdx;           <span class="comment">/* 参数类型，指向DexTypeId列表的索引，最终指向字符串索引 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>作用：</p>
-<p>假设有很多方法</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">a</span><span class="params">(<span class="type">int</span> x)</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">b</span><span class="params">(<span class="type">int</span> x)</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">c</span><span class="params">(<span class="type">int</span> x)</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">d</span><span class="params">(<span class="type">int</span> x)</span></span><br></pre></td></tr></table></figure>
-
-<p>方法名字不同，但是签名完全一样：(int)-&gt;int ;有了proto_id之后所有方法都可以共享，proto_id[0]&#x3D;(int )-&gt;int</p>
-<p>a-&gt;proto_id[0]</p>
-<p>b-&gt;proto_id[0]</p>
-<h3 id="shortyId"><a href="#shortyId" class="headerlink" title="shortyId"></a>shortyId</h3><!-- 这是一张图片，ocr 内容为： -->
-<p><img src="/images/posts/dex%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90-d29e74a65bd1.png">返回值加参数列表</p>
-<p>指向的是string id</p>
-<h3 id="returnTypeldx"><a href="#returnTypeldx" class="headerlink" title="returnTypeldx"></a>returnTypeldx</h3><p>指向的是type id</p>
-<p>eg：returnTypeIdx -&gt; type_id(“Ljava&#x2F;lang&#x2F;String;”)</p>
-<h3 id="parametersoff"><a href="#parametersoff" class="headerlink" title="parametersoff"></a>parametersoff</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">parametersOff</span><br><span class="line">  -&gt; DexTypeList</span><br><span class="line">       size = 参数个数</span><br><span class="line">       <span class="built_in">list</span> = type_id[]</span><br><span class="line">       例子</span><br><span class="line">       String foo(<span class="type">int</span> a, boolean b)</span><br><span class="line">parametersOff -&gt;</span><br><span class="line">  size = <span class="number">2</span></span><br><span class="line">  <span class="built_in">list</span>[<span class="number">0</span>] -&gt; type_id(<span class="string">&quot;I&quot;</span>)</span><br><span class="line">  <span class="built_in">list</span>[<span class="number">1</span>] -&gt; type_id(<span class="string">&quot;Z&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="filed-id"><a href="#filed-id" class="headerlink" title="filed id"></a>filed id</h3><p>字段：类+类型+名字</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexFieldId</span> &#123;</span></span><br><span class="line">    u2 classIdx;   <span class="comment">/* 类的类型，指向DexTypeId列表的索引 */</span></span><br><span class="line">    u2 typeIdx;    <span class="comment">/* 字段类型，指向DexTypeId列表的索引 */</span></span><br><span class="line">    u4 nameIdx;    <span class="comment">/* 字段名，指向DexStringId列表的索引 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="method-id"><a href="#method-id" class="headerlink" title="method id"></a>method id</h3><p>方法&#x3D;类+原型+名字</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexMethodId</span> &#123;</span></span><br><span class="line">    u2 classIdx;  <span class="comment">/* 类的类型，指向DexTypeId列表的索引 */</span></span><br><span class="line">    u2 protoIdx;  <span class="comment">/* 声明类型，指向DexProtoId列表的索引 */</span></span><br><span class="line">    u4 nameIdx;   <span class="comment">/* 方法名，  指向DexStringId列表的索引 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="classdef"><a href="#classdef" class="headerlink" title="classdef"></a>classdef</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 类的基本信息</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexClassDef</span> &#123;</span></span><br><span class="line">    u4 classIdx;    <span class="comment">/* 类的类型，指向DexTypeId列表的索引 */</span></span><br><span class="line">    u4 accessFlags; <span class="comment">/* 访问标志 */</span></span><br><span class="line">    u4 superclassIdx;  <span class="comment">/* 父类类型，指向DexTypeId列表的索引 */</span></span><br><span class="line">    u4 interfacesOff; <span class="comment">/* 接口，指向DexTypeList的偏移 */</span></span><br><span class="line">    u4 sourceFileIdx; <span class="comment">/* 源文件名，指向DexStringId列表的索引 */</span></span><br><span class="line">    u4 annotationsOff; <span class="comment">/* 注解，指向DexAnnotationsDirectoryItem结构 */</span></span><br><span class="line">    u4 classDataOff;   <span class="comment">/* 指向DexClassData结构的偏移 */</span></span><br><span class="line">    u4 staticValuesOff;  <span class="comment">/* 指向DexEncodedArray结构的偏移 */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类的字段与方法概况</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexClassData</span> &#123;</span></span><br><span class="line">    DexClassDataHeader header; <span class="comment">/* 指定字段与方法的个数 */</span></span><br><span class="line">    DexField* staticFields;    <span class="comment">/* 静态字段，DexField结构 */</span></span><br><span class="line">    DexField* instanceFields;  <span class="comment">/* 实例字段，DexField结构 */</span></span><br><span class="line">    DexMethod* directMethods;  <span class="comment">/* 直接方法，DexMethod结构 */</span></span><br><span class="line">    DexMethod* virtualMethods; <span class="comment">/* 虚方法，DexMethod结构 */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 详细描述类的字段个数与方法个数</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexClassDataHeader</span> &#123;</span></span><br><span class="line">    u4 staticFieldsSize;  <span class="comment">/* 静态字段个数 */</span></span><br><span class="line">    u4 instanceFieldsSize; <span class="comment">/* 实例字段个数 */</span></span><br><span class="line">    u4 directMethodsSize;  <span class="comment">/* 直接方法个数 */</span></span><br><span class="line">    u4 virtualMethodsSize; <span class="comment">/* 虚方法个数 */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 字段定义</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexField</span> &#123;</span></span><br><span class="line">    u4 fieldIdx;    <span class="comment">/* 指向DexFieldId的索引 */</span></span><br><span class="line">    u4 accessFlags; <span class="comment">/* 访问标志 */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法定义</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexMethod</span> &#123;</span></span><br><span class="line">    u4 methodIdx;   <span class="comment">/* 指向DexMethodId的索引 */</span></span><br><span class="line">    u4 accessFlags; <span class="comment">/* 访问标志 */</span></span><br><span class="line">    u4 codeOff;     <span class="comment">/* 指向DexCode结构的偏移 */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 代码概况</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexCode</span> &#123;</span></span><br><span class="line">    u2 registersSize;   <span class="comment">/* 使用的寄存器个数 */</span></span><br><span class="line">    u2 insSize;         <span class="comment">/* 参数个数 */</span></span><br><span class="line">    u2 outsSize;        <span class="comment">/* 调用其他方法时其它方法使用的寄存器个数，会在自己的调用栈申请，并压栈（猜测） */</span></span><br><span class="line">    u2 triesSize;       <span class="comment">/* Try/Catch个数 */</span></span><br><span class="line">    u4 debugInfoOff;    <span class="comment">/* 指向调试信息的偏移 */</span></span><br><span class="line">    u4 insnsSize;       <span class="comment">/* 指令集个数，以2字节为单位 */</span></span><br><span class="line">    u2 insns[<span class="number">1</span>];        <span class="comment">/* 指令集 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="dex-map-section"><a href="#dex-map-section" class="headerlink" title="dex map section"></a>dex map section</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexMapList</span> &#123;</span></span><br><span class="line">    u4 size;               <span class="comment">/* DexMapItem的个数，方便解析 */</span></span><br><span class="line">    DexMapItem <span class="built_in">list</span>[<span class="number">1</span>];    <span class="comment">/* 指向DexMapItem */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DexMapItem</span> &#123;</span></span><br><span class="line">    u2 type;      <span class="comment">/* kDexType开头的类型 */</span></span><br><span class="line">    u2 unused;    <span class="comment">/* 未使用，用于字节对齐 */</span></span><br><span class="line">    u4 size;      <span class="comment">/* 指定相应类型的个数 */</span></span><br><span class="line">    u4 offset;    <span class="comment">/* 指定相应类型的数据的文件偏移 */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* type字段为一个枚举常量，通过类型名称很容易判断它的具体类型。 */</span></span><br><span class="line"><span class="comment">/* map item type codes */</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    kDexTypeHeaderItem               = <span class="number">0x0000</span>,</span><br><span class="line">    kDexTypeStringIdItem             = <span class="number">0x0001</span>,</span><br><span class="line">    kDexTypeTypeIdItem               = <span class="number">0x0002</span>,</span><br><span class="line">    kDexTypeProtoIdItem              = <span class="number">0x0003</span>,</span><br><span class="line">    kDexTypeFieldIdItem              = <span class="number">0x0004</span>,</span><br><span class="line">    kDexTypeMethodIdItem             = <span class="number">0x0005</span>,</span><br><span class="line">    kDexTypeClassDefItem             = <span class="number">0x0006</span>,</span><br><span class="line">    kDexTypeMapList                  = <span class="number">0x1000</span>,</span><br><span class="line">    kDexTypeTypeList                 = <span class="number">0x1001</span>,</span><br><span class="line">    kDexTypeAnnotationSetRefList     = <span class="number">0x1002</span>,</span><br><span class="line">    kDexTypeAnnotationSetItem        = <span class="number">0x1003</span>,</span><br><span class="line">    kDexTypeClassDataItem            = <span class="number">0x2000</span>,</span><br><span class="line">    kDexTypeCodeItem                 = <span class="number">0x2001</span>,</span><br><span class="line">    kDexTypeStringDataItem           = <span class="number">0x2002</span>,</span><br><span class="line">    kDexTypeDebugInfoItem            = <span class="number">0x2003</span>,</span><br><span class="line">    kDexTypeAnnotationItem           = <span class="number">0x2004</span>,</span><br><span class="line">    kDexTypeEncodedArrayItem         = <span class="number">0x2005</span>,</span><br><span class="line">    kDexTypeAnnotationsDirectoryItem = <span class="number">0x2006</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><code>DEX map section</code> 就是 DEX 文件的全局目录表，由 <code>DexMapList</code> 和多个 <code>DexMapItem</code> 组成，每个 <code>DexMapItem</code> 记录一种 section 的类型、数量和文件偏移，用来帮助解析器定位和校验整个 DEX 文件结构。  </p>
-<p><font style="color:rgba(0, 0, 0, 0.87);">DexHeader 中的 mapOff 字段给出了 DexMapList 结构在 DEX 文件中的偏移。当 Dalvik 虚拟机解析 DEX 文件后的内容后，会将内容映射到 DexMapList 数据结构，可以说该结构描述了对应的 DEX 文件的整体概况。</font></p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/06/22/dex%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90/" rel="prev" title="dex文件解析">
+      <i class="fa fa-chevron-left"></i> dex文件解析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/06/22/Xposed%E6%A1%86%E6%9E%B6/" rel="next" title="Xposed框架">
+      Xposed框架 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -1056,6 +485,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#elf%E9%A1%BB%E7%9F%A5"><span class="nav-number">1.</span> <span class="nav-text">elf须知</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%EF%BC%8C"><span class="nav-number">1.1.</span> <span class="nav-text">链接，</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E4%BD%8D%EF%BC%88%E5%A6%82%E4%BD%95%E8%B0%83%E7%94%A8%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%AD%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">重定位（如何调用动态库中的函数）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E9%93%BE%E6%8E%A5%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.2.1.</span> <span class="nav-text">1链接重定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E8%BF%90%E8%A1%8C%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.2.2.</span> <span class="nav-text">2运行重定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E5%BB%B6%E8%BF%9F%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.2.3.</span> <span class="nav-text">3延迟重定位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PLT%E5%92%8CGOT%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.</span> <span class="nav-text">PLT和GOT的结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NDK%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">2.</span> <span class="nav-text">NDK基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1Android-so%E6%96%87%E4%BB%B6%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">1Android so文件的类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2so%E7%9A%84%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.2.</span> <span class="nav-text">2so的加载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%84%E7%B1%BBhook%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">各类hook技术原理分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Xposed-hook%E6%8A%80%E6%9C%AF"><span class="nav-number">3.1.</span> <span class="nav-text">1.Xposed hook技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xposed%E5%8E%9F%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">xposed原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2fridahook%E5%8E%9F%E7%90%86"><span class="nav-number">3.3.</span> <span class="nav-text">2fridahook原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-inlinehook%E6%8A%80%E6%9C%AF"><span class="nav-number">3.4.</span> <span class="nav-text">3.inlinehook技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#inlinehook%E5%8E%9F%E7%90%86"><span class="nav-number">3.4.1.</span> <span class="nav-text">inlinehook原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inlinehook%E7%BB%84%E6%88%90"><span class="nav-number">3.4.2.</span> <span class="nav-text">inlinehook组成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-plt-Got-hook"><span class="nav-number">3.5.</span> <span class="nav-text">4.plt&#x2F;Got hook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#plt-got%E8%B0%83%E7%94%A8"><span class="nav-number">3.5.1.</span> <span class="nav-text">plt&#x2F;got调用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Unicorn-hook"><span class="nav-number">3.6.</span> <span class="nav-text">5.Unicorn hook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E6%9E%B6%E6%9E%84"><span class="nav-number">3.6.1.</span> <span class="nav-text">多架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%AF%AD%E8%A8%80%E5%A4%9A%E8%AF%AD%E8%A8%80"><span class="nav-number">3.6.2.</span> <span class="nav-text">多语言多语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">3.6.3.</span> <span class="nav-text">多线程安全多线程安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">3.6.4.</span> <span class="nav-text">虚拟内存虚拟内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hook-%E6%9C%BA%E5%88%B6"><span class="nav-number">3.6.5.</span> <span class="nav-text">Hook 机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8so"><span class="nav-number">3.6.6.</span> <span class="nav-text">调用so</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

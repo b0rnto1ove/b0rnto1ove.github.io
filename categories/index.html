@@ -276,7 +276,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -367,14 +367,15 @@
   
 ﻿<script>
 document.addEventListener('DOMContentLoaded', () => {
-  if (!window.CONFIG || !CONFIG.page || !CONFIG.page.isHome) return;
+  const isRootPage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+  if (!isRootPage) return;
 
   const body = document.body;
   const mainInner = document.querySelector('.main-inner');
   const contentWrap = document.querySelector('.content-wrap');
   const postBlocks = [...document.querySelectorAll('.content.index .post-block')];
 
-  if (!mainInner || !contentWrap || !postBlocks.length) return;
+  if (!mainInner || !contentWrap) return;
 
   body.classList.add('is-home-enhanced');
 
@@ -415,9 +416,18 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="home-post-card__meta">${date}</p>
         <a class="home-post-card__title" href="${href}">${title}</a>
         <p class="home-post-card__excerpt">${excerpt}${excerptText.length > 120 ? '...' : ''}</p>
+        <a class="home-post-card__more" href="${href}">阅读全文</a>
       </article>
     `;
   }).join('');
+
+  const panelContent = cards || `
+    <div class="home-posts-panel__empty">
+      <p class="home-posts-panel__kicker">Posts</p>
+      <h2 class="home-posts-panel__title">这里先空着</h2>
+      <p class="home-posts-panel__empty-copy">等你写下新的文章，它们会出现在这里。</p>
+    </div>
+  `;
 
   const panel = document.createElement('section');
   panel.className = 'home-posts-panel';
@@ -428,12 +438,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="home-posts-panel__header">
         <div>
           <p class="home-posts-panel__kicker">Posts</p>
-          <h2 class="home-posts-panel__title">这里放你写的所有文章</h2>
+          <h2 class="home-posts-panel__title">我的文章</h2>
         </div>
         <button class="home-posts-panel__close" id="home-close-posts-button" type="button">关闭</button>
       </div>
-      <div class="home-posts-panel__grid">
-        ${cards}
+      <div class="home-posts-panel__grid ${cards ? '' : 'is-empty'}">
+        ${panelContent}
       </div>
     </div>
   `;
@@ -465,6 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+
 
 </body>
 </html>

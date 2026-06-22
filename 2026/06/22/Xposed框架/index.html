@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"b0rnto1ove.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="链接andorid运行机制1.Android平台架构  linux内核android平台运行的基础是linux内核，android Runtime（ART）依靠linux内核实现底层功能，使用linux内核可以让Android利用主要安全功能，并且运行设备制造商为著名的内核开发硬件程序驱动，可以理解基于linux内核让Android更安全 硬件抽象层（HAL）Hal提供标准界面，向更高级的JAVA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Xposed框架">
+<meta property="og:url" content="https://b0rnto1ove.github.io/2026/06/22/Xposed%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="b0rnto1ove">
+<meta property="og:description" content="链接andorid运行机制1.Android平台架构  linux内核android平台运行的基础是linux内核，android Runtime（ART）依靠linux内核实现底层功能，使用linux内核可以让Android利用主要安全功能，并且运行设备制造商为著名的内核开发硬件程序驱动，可以理解基于linux内核让Android更安全 硬件抽象层（HAL）Hal提供标准界面，向更高级的JAVA">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/Xposed%E6%A1%86%E6%9E%B6-e7e9b1990dd7.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/Xposed%E6%A1%86%E6%9E%B6-33612bed8107.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/Xposed%E6%A1%86%E6%9E%B6-3a2823c4e0e4.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/Xposed%E6%A1%86%E6%9E%B6-043b5b13ca37.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/Xposed%E6%A1%86%E6%9E%B6-fc9b200b61ac.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/Xposed%E6%A1%86%E6%9E%B6-1ede6b4a5494.png">
+<meta property="og:image" content="https://b0rnto1ove.github.io/images/posts/Xposed%E6%A1%86%E6%9E%B6-5ff71aec5a76.png">
+<meta property="article:published_time" content="2026-06-22T05:13:53.000Z">
+<meta property="article:modified_time" content="2026-06-22T05:30:08.134Z">
+<meta property="article:author" content="b0rnto1ove">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://b0rnto1ove.github.io/images/posts/Xposed%E6%A1%86%E6%9E%B6-e7e9b1990dd7.png">
+
+<link rel="canonical" href="https://b0rnto1ove.github.io/2026/06/22/Xposed%E6%A1%86%E6%9E%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Xposed框架 | b0rnto1ove</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">b0rnto1ove</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">好事多磨</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://b0rnto1ove.github.io/2026/06/22/Xposed%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="b0rnto1ove">
+      <meta itemprop="description" content="好事多磨">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="b0rnto1ove">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Xposed框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-06-22 13:13:53 / 修改时间：13:30:08" itemprop="dateCreated datePublished" datetime="2026-06-22T13:13:53+08:00">2026-06-22</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="链接andorid运行机制"><a href="#链接andorid运行机制" class="headerlink" title="链接andorid运行机制"></a><a href="about:blank">链接</a>andorid运行机制</h1><h2 id="1-Android平台架构"><a href="#1-Android平台架构" class="headerlink" title="1.Android平台架构"></a>1.Android平台架构</h2><!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-e7e9b1990dd7.png"></p>
+<h3 id="linux内核"><a href="#linux内核" class="headerlink" title="linux内核"></a>linux内核</h3><p>android平台运行的基础是linux内核，android Runtime（ART）依靠linux内核实现底层功能，使用linux内核可以让Android利用主要安全功能，并且运行设备制造商为著名的内核开发硬件程序驱动，可以理解基于linux内核让Android更安全</p>
+<h3 id="硬件抽象层（HAL）"><a href="#硬件抽象层（HAL）" class="headerlink" title="硬件抽象层（HAL）"></a>硬件抽象层（HAL）</h3><p>Hal提供标准界面，向更高级的JAVA API框架显示设备硬件功能，HAL包含多个模块，其中每个模块都为特定类型的硬件组成实现的一个界面，例如蓝牙和相机模块，当框架api要访问设备硬件时，Android系统为硬件组件加载模块</p>
+<h3 id="Android-Runtime"><a href="#Android-Runtime" class="headerlink" title="Android Runtime"></a>Android Runtime</h3><p><font style="color:rgb(0, 0, 0);">Android 5.0之前Android Runtime为Dalvik，Android 5.0之后Android Runtime为ART</font></p>
+<p><font style="color:rgb(0, 0, 0);">了解android的演变，Dalvik和ART的区别</font><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903748058218509">https://juejin.cn/post/6844903748058218509</a></p>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-33612bed8107.png"></p>
+<p>（1）dex文件：Android将所有的class文件打包形成一个dex文件，是Dalvik运行的程序</p>
+<p><font style="color:rgb(0, 0, 0);">（2）odex文件：优化过的dex文件，Apk在安装时会进行验证和优化，通过dexopt生成odex文件，加快Apk的响应时间</font></p>
+<p><font style="color:rgb(0, 0, 0);">（3）oat文件：Android私有ELF文件格式，有dex2oat处理生成，包含（原dex文件+dex翻译的本地机器指令），是ART虚拟机使用的文件，可以直接加载 </font></p>
+<p><font style="color:rgb(0, 0, 0);">（4）vdex文件：Android 8.0引入，包含APK的未压缩DEX代码，以及一些旨在加快验证速度的元数据</font></p>
+<h4 id="Android-2-2"><a href="#Android-2-2" class="headerlink" title="Android 2.2"></a><font style="color:rgb(0, 0, 0);">Android 2.2</font></h4><h5 id="Dalvik"><a href="#Dalvik" class="headerlink" title="Dalvik"></a>Dalvik</h5><p>支持已转换成dex文件格式的Android应用，基于寄存器，指令执行更快，加载的是odex文件，采用JIT运行时编译</p>
+<h5 id="JIT"><a href="#JIT" class="headerlink" title="JIT"></a>JIT</h5><p>jit就是运行时编译，理解成运行的编译器，为了加快Dalvik虚拟机解释dex文件速度，运行时动态地将执行频率很高的dex字节码转化成本地机器码</p>
+<p>缺点每次启动应用都要重新编译，运行时耗电；dex加载时会触发dexopt，导致Multidex加载非常慢</p>
+<h4 id="Android-5-0"><a href="#Android-5-0" class="headerlink" title="Android 5.0"></a>Android 5.0</h4><h5 id="AOT"><a href="#AOT" class="headerlink" title="AOT"></a>AOT</h5><p>运行前编译，应用在安装前会启动dex2oat过程把dex预编译成elf文件，每次运行程序的时候不用重新编译</p>
+<p>缺点，安装AOT时触发dex2oat,需要编译成native code，安装时间长；dex2oat生成的文件体积大占内存</p>
+<h5 id="jvm和jit和aot的区别"><a href="#jvm和jit和aot的区别" class="headerlink" title="jvm和jit和aot的区别"></a>jvm和jit和aot的区别</h5><p>JVM：传统的Java虚拟机、基于栈、运行class文件</p>
+<p>Dalvik:支持已转换成dex格式的android应用，基于寄存器，指令执行更快,加载的是odex（优化的dex） </p>
+<p>ART:第一次安装时，将dex进行Aot(预编译)，字节码预先编译成机器码，生成可执行oat文件（ELF文件）</p>
+<h4 id="Android-7-0"><a href="#Android-7-0" class="headerlink" title="Android 7.0"></a>Android 7.0</h4><h5 id="AOT-JIT-解释器"><a href="#AOT-JIT-解释器" class="headerlink" title="AOT+JIT+解释器"></a>AOT+JIT+解释器</h5><p>1.应用安装的时候dex不会被编译</p>
+<p>2.应用在运行时dex文件先通过解析器后会被直接执行，与此同时热点函数（频繁调用，执行次数很高的）会被识别并被jit编译后存储在jit code cache 中并生成profile文件以记录热点函数的信息</p>
+<p>3手机空闲的时候，系统会扫描app目录下的profile文件并执行AOT过程进行编译</p>
+<h5 id="Dalvik与ART的区别"><a href="#Dalvik与ART的区别" class="headerlink" title="Dalvik与ART的区别"></a>Dalvik与ART的区别</h5><p>Dalvik是运行时编译，ART是运行前编译</p>
+<p>Dalvik每次运行前都会将执行频繁的dex文件编译为机器码，ART在安装时编译，把程序代码转换成机器语言存储在本地</p>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-3a2823c4e0e4.png"></p>
+<p>java方法-&gt;dex字节码-&gt;art判断有没有编译好的quick code-&gt;有直接执行机器码，没有解释器解析执行-&gt; 频繁执行后JIT编译</p>
+<h2 id="2Android启动流程"><a href="#2Android启动流程" class="headerlink" title="2Android启动流程"></a>2Android启动流程</h2><!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-043b5b13ca37.png"></p>
+<h3 id="Loader"><a href="#Loader" class="headerlink" title="Loader"></a>Loader</h3><p>Boot ROM手机处于关机状态时，长按Power键开机，引导芯片开始从固化在ROM（ 非易失性存储  ，断电后不会丢失）里的预设代码开始执行，然后加载引导程序到RAM（ 运行时内存  ）</p>
+<p>Boot Loader 这是启动Android系统之间的引导程序，主要是检查RAM，初始化硬件参数，拉起Android OS</p>
+<p>长按电源后，手机就会在loader层加载引导程序，并启动引导程序，初始化参数，</p>
+<h3 id="linux内核-1"><a href="#linux内核-1" class="headerlink" title="linux内核"></a>linux内核</h3><p>启动Kernel（内核）的swapper进程（pid&#x3D;0）；该进程又称为idle进程，系统初始化过程Kernel由无到有开创的第一个进程，由于初始化进程管理。内存管理，加载Display，Camera Driver，Binder Driver等相关工作，这些模块驱动都会封装到相应的HAL（模块）层中</p>
+<p>启动ini进程。pid&#x3D;1，用来孵化用户空间的守护进程，HAL，开机动画</p>
+<p>启动kthreadd（内核线程管理者）进程pid&#x3D;2，是linux系统的内核进程，会创建内核工作线程kworkder，软中断线程ksoftirqd（具体干活的线程），thermal等内核守护进程，kthreadd进程是所有内核的鼻祖</p>
+<h3 id="执行init进程"><a href="#执行init进程" class="headerlink" title="执行init进程"></a>执行init进程</h3><p>Linux Kernel完成系统设置后，会首先在系统中寻找init.rc 文件，并启动init进程，init.rc脚本存放路径</p>
+<p><font style="color:#000000;">&#x2F;system&#x2F;core&#x2F;rootdir&#x2F;init.rc，init进程&#x2F;system&#x2F;core&#x2F;init</font></p>
+<h4 id="init进程"><a href="#init进程" class="headerlink" title="init进程"></a><font style="color:#000000;">init进程</font></h4><p>（1）init进程会孵化出ueventd、logd、healthd、installd、adbd、lm这里写代码片kd等用户守护进程</p>
+<p>（2）init进程还会启动ServiceManager(Binder服务管家)、bootanim(开机动画)等重要服务</p>
+<p>（3）解析init.rc配置文件并孵化zygote进程**,****<u>Zygote进程是Android系统的第一个java进程（虚拟机进程）</u><strong><u>，</u></strong><u>zygote进程是所以Java进程的父进程</u>**</p>
+<h4 id="zygote"><a href="#zygote" class="headerlink" title="zygote"></a><font style="color:rgb(0, 0, 0);">zygote</font></h4><h5 id="创建zygote过程"><a href="#创建zygote过程" class="headerlink" title="创建zygote过程"></a>创建zygote过程</h5><p>（1）解析 init.zygote.rc &#x2F;&#x2F;parse_service()</p>
+<p><font style="color:#000000;">（2）启动 main 类型服务 &#x2F;&#x2F;do_class_start()</font></p>
+<p><font style="color:#000000;">（3）启动 zygote 服务 &#x2F;&#x2F;service_start()</font></p>
+<p><font style="color:#000000;">（4）创建 Zygote 进程 &#x2F;&#x2F;fork() </font></p>
+<p><font style="color:#000000;">（5）创建 Zygote Socket &#x2F;&#x2F;create_socket()</font></p>
+<p><font style="color:#000000;">Zygote为孵化器，即所有Android应用的祖先，Zygote让vm共享代码，低内存占用以及最小的启动时间成为可能，Zygote是一个虚拟机进程，Zygote是init进程通过解析init.zygote.rc文件而创建的，zygote所对应的app_process，所对应的源文件是App_main.cpp进程是zygote</font></p>
+<h5 id="作用"><a href="#作用" class="headerlink" title="作用"></a><font style="color:#000000;">作用</font></h5><p>(1)解析init.zygote.rc中的参数，创建AppRuntime并调用AppRuntime.start()方法；</p>
+<p>(2)调用AndroidRuntime的startVM()方法创建虚拟机，再调用startReg()注册JNI函数；</p>
+<p>(3)通过JNI方式调用ZygoteInit.main()，第一次进入Java世界；</p>
+<p>(4)registerZygoteSocket()建立socket通道，zygote作为通信的服务端，用于响应客户端请求；</p>
+<p>(5)preload()预加载通用类、drawable和color资源、openGL以及共享库以及WebView，用于提高app启动效率；</p>
+<p>(6)zygote完毕大部分工作，接下来再通过startSystemServer()，fork得力帮手system_server进程，也是上层framework的运行载体。 </p>
+<p>(7)zygote功成身退，调用runSelectLoop()（死循环），随时待命，当接收到请求创建新进程请求时立即唤醒并执行相应工作。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><font style="color:#000000;">总结</font></h3><p>(1) 手机开机后，引导芯片启动，引导芯片开始从固化在ROM里的预设代码执行，加载引导程序到到RAM，BootLoader检查RAM，初始化硬件参数等功能；</p>
+<p>(2) 硬件等参数初始化完成后，进入到Kernel层，Kernel层主要加载一些硬件设备驱动，初始化进程管理等操作。在Kernel中首先启动swapper进程（pid&#x3D;0），用于初始化进程管理、内管管理、加载Driver等操作，再启动kthread进程(pid&#x3D;2),这些linux系统的内核进程，kthread是所有内核进程的鼻祖；</p>
+<p>(3) Kernel层加载完毕后，硬件设备驱动与HAL层进行交互。初始化进程管理等操作会启动init进程 ，这些在Native层中；</p>
+<p>(4) init进程(pid&#x3D;1，init进程是所有进程的鼻祖，第一个启动)启动后，会启动adbd，logd等用户守护进程，并且会启动servicemanager(binder服务管家)等重要服务，同时孵化出zygote进程，这里属于C++ Framework，代码为C++程序； </p>
+<p>(5) zygote进程是由init进程解析init.rc文件后fork生成，它会加载虚拟机，启动System Server(zygote孵化的第一个进程)；SystemServer负责启动和管理整个Java Framework，包含ActivityManager，WindowManager，PackageManager，PowerManager等服务； </p>
+<p>(6) zygote同时会启动相关的APP进程，它启动的第一个APP进程为Launcher，然后启动Email，SMS等进程，所有的APP进程都有zygote fork生成。</p>
+<h2 id="Xposed框架运行机制"><a href="#Xposed框架运行机制" class="headerlink" title="Xposed框架运行机制"></a>Xposed框架运行机制</h2><h3 id="xposed实现原理"><a href="#xposed实现原理" class="headerlink" title="xposed实现原理"></a>xposed实现原理</h3><p>替换Android中的虚拟机art，替换app_process以及生成的一些lib，bin文件</p>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-fc9b200b61ac.png"><!-- 这是一张图片，ocr 内容为： --><br><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-1ede6b4a5494.png"></p>
+<p>初始化虚拟机后，xposed会对虚拟机进行修改，函数onVmcreate（env），在这个函数里通过dlopen加载libxposed_art.so,</p>
+<p>初始化xposed相关库xposedInitLLib</p>
+<p>xposedInitLLib-&gt;onVMcreatedCommon-&gt;initXposedBridge,初始化XposedBridge，讲register_native_XposedBridge中的函数注册为native方法</p>
+<p>XposeInitLib-&gt;onVMcreatedCommon-&gt;onVmcreated,为xposed_callback_class类和xposed_callback_methon方法赋值</p>
+<p>虚拟机初始化完成后，会调用传入的de.robv.android.xposed.XposedBridge类，初始化java层XposedBridge.jar，调用main函数</p>
+<p>（1）hook 系统资源相关的方法 XposedInit.hookResources() </p>
+<p>（2）hook zygote 的相关方法 XposedInit.initForZygote() </p>
+<p>（3）加载系统中已经安装的xposed 模块 XposedInit.loadModules()</p>
+<p>Xposed的基本原理是修改了ART&#x2F;Davilk虚拟机，将需要hook的函数注册为Native层函数。当执行到这一函数是虚拟机会优先执行Native层函数，然后再去执行Java层函数，这样完成函数的hook</p>
+<p>（1）手机启动时init进程会启动zygote这个进程。由于zygote进程文件app_process已被替换，所以启动的时Xposed版的zygote进程</p>
+<p>（2）Xposed_zygote进程启动后会初始化一些so文件（system&#x2F;lib system&#x2F;lib64），然后进入XposedBridge.jar中的XposedBridge.main中初始化jar包完成对一些关键Android系统函数的hook</p>
+<p>（3）Hook则是利用修改过的虚拟机将函数注册为native函数 </p>
+<p>（4）然后再返回zygote中完成原本zygote需要做的工作</p>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="/images/posts/Xposed%E6%A1%86%E6%9E%B6-5ff71aec5a76.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/06/22/hook%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6/" rel="prev" title="hook的基本框架">
+      <i class="fa fa-chevron-left"></i> hook的基本框架
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/06/22/%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84ClassLoader%E6%9C%BA%E5%88%B6/" rel="next" title="安卓中的ClassLoader机制">
+      安卓中的ClassLoader机制 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5andorid%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">链接andorid运行机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Android%E5%B9%B3%E5%8F%B0%E6%9E%B6%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">1.Android平台架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux%E5%86%85%E6%A0%B8"><span class="nav-number">1.1.1.</span> <span class="nav-text">linux内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E6%8A%BD%E8%B1%A1%E5%B1%82%EF%BC%88HAL%EF%BC%89"><span class="nav-number">1.1.2.</span> <span class="nav-text">硬件抽象层（HAL）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android-Runtime"><span class="nav-number">1.1.3.</span> <span class="nav-text">Android Runtime</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Android-2-2"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">Android 2.2</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Dalvik"><span class="nav-number">1.1.3.1.1.</span> <span class="nav-text">Dalvik</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#JIT"><span class="nav-number">1.1.3.1.2.</span> <span class="nav-text">JIT</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android-5-0"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">Android 5.0</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AOT"><span class="nav-number">1.1.3.2.1.</span> <span class="nav-text">AOT</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#jvm%E5%92%8Cjit%E5%92%8Caot%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.1.3.2.2.</span> <span class="nav-text">jvm和jit和aot的区别</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android-7-0"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">Android 7.0</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AOT-JIT-%E8%A7%A3%E9%87%8A%E5%99%A8"><span class="nav-number">1.1.3.3.1.</span> <span class="nav-text">AOT+JIT+解释器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Dalvik%E4%B8%8EART%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.1.3.3.2.</span> <span class="nav-text">Dalvik与ART的区别</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">2Android启动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Loader"><span class="nav-number">1.2.1.</span> <span class="nav-text">Loader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linux%E5%86%85%E6%A0%B8-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">linux内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8Cinit%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.2.3.</span> <span class="nav-text">执行init进程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#init%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">init进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#zygote"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">zygote</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAzygote%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.3.2.1.</span> <span class="nav-text">创建zygote过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">1.2.3.2.2.</span> <span class="nav-text">作用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.2.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Xposed%E6%A1%86%E6%9E%B6%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">Xposed框架运行机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#xposed%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">1.3.1.</span> <span class="nav-text">xposed实现原理</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="b0rnto1ove"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">b0rnto1ove</p>
+  <div class="site-description" itemprop="description">好事多磨</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">b0rnto1ove</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+﻿<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const isRootPage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+  if (!isRootPage) return;
+
+  const body = document.body;
+  const mainInner = document.querySelector('.main-inner');
+  const contentWrap = document.querySelector('.content-wrap');
+  const postBlocks = [...document.querySelectorAll('.content.index .post-block')];
+
+  if (!mainInner || !contentWrap) return;
+
+  body.classList.add('is-home-enhanced');
+
+  const heartSvg = '<svg class="empty" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"></path></svg><svg class="filled" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"></path></svg>';
+
+  const hero = document.createElement('section');
+  hero.className = 'home-landing';
+  hero.innerHTML = `
+    <div class="home-landing__bg"></div>
+    <div class="home-landing__overlay"></div>
+    <div class="home-landing__content">
+      <div class="home-landing__copy">
+        <p class="home-landing__eyebrow">Home</p>
+        <h1 class="home-landing__title">b0rnto1ove</h1>
+        <p class="home-landing__subtitle">好事多磨</p>
+        <button class="home-landing__button" id="home-open-posts" type="button" aria-label="查看全部文章">
+          ${heartSvg}
+          查看全部文章
+        </button>
+      </div>
+    </div>
+  `;
+
+  mainInner.insertBefore(hero, contentWrap);
+
+  const cards = postBlocks.map(post => {
+    const link = post.querySelector('.post-title-link');
+    const time = post.querySelector('time');
+    const bodyText = post.querySelector('.post-body');
+    const href = link ? link.getAttribute('href') : '#';
+    const title = link ? link.textContent.trim() : '未命名文章';
+    const date = time ? time.textContent.trim() : '';
+    const excerptText = bodyText ? bodyText.textContent.replace(/\s+/g, ' ').trim() : '';
+    const excerpt = excerptText.slice(0, 120);
+
+    return `
+      <article class="home-post-card">
+        <p class="home-post-card__meta">${date}</p>
+        <a class="home-post-card__title" href="${href}">${title}</a>
+        <p class="home-post-card__excerpt">${excerpt}${excerptText.length > 120 ? '...' : ''}</p>
+        <a class="home-post-card__more" href="${href}">阅读全文</a>
+      </article>
+    `;
+  }).join('');
+
+  const panelContent = cards || `
+    <div class="home-posts-panel__empty">
+      <p class="home-posts-panel__kicker">Posts</p>
+      <h2 class="home-posts-panel__title">这里先空着</h2>
+      <p class="home-posts-panel__empty-copy">等你写下新的文章，它们会出现在这里。</p>
+    </div>
+  `;
+
+  const panel = document.createElement('section');
+  panel.className = 'home-posts-panel';
+  panel.setAttribute('aria-hidden', 'true');
+  panel.innerHTML = `
+    <div class="home-posts-panel__backdrop" id="home-close-posts-backdrop"></div>
+    <div class="home-posts-panel__dialog">
+      <div class="home-posts-panel__header">
+        <div>
+          <p class="home-posts-panel__kicker">Posts</p>
+          <h2 class="home-posts-panel__title">我的文章</h2>
+        </div>
+        <button class="home-posts-panel__close" id="home-close-posts-button" type="button">关闭</button>
+      </div>
+      <div class="home-posts-panel__grid ${cards ? '' : 'is-empty'}">
+        ${panelContent}
+      </div>
+    </div>
+  `;
+
+  body.appendChild(panel);
+
+  const openButton = document.getElementById('home-open-posts');
+  const closeButton = document.getElementById('home-close-posts-button');
+  const closeBackdrop = document.getElementById('home-close-posts-backdrop');
+
+  const openPanel = () => {
+    panel.classList.add('is-open');
+    panel.setAttribute('aria-hidden', 'false');
+  };
+
+  const closePanel = () => {
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+  };
+
+  openButton.addEventListener('click', openPanel);
+  closeButton.addEventListener('click', closePanel);
+  closeBackdrop.addEventListener('click', closePanel);
+
+  window.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && panel.classList.contains('is-open')) {
+      closePanel();
+    }
+  });
+});
+</script>
+
+
+</body>
+</html>
