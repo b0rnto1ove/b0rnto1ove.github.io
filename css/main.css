@@ -1169,7 +1169,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #d9b6d9;
+  background: #ff9f09;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2569,17 +2569,14 @@ body {
   font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
 }
 body:not(.is-home-enhanced) {
-  background: #120d0c;
+  background: linear-gradient(180deg, rgba(255,248,242,0.56) 0%, rgba(255,248,242,0.34) 100%), url("/images/mount-fuji.jpg") center center/cover fixed no-repeat;
 }
 body:not(.is-home-enhanced)::before {
   content: '';
   position: fixed;
-  inset: -24px;
+  inset: 0;
   z-index: -2;
-  background-image: url("/images/mount-fuji.jpg");
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background: url("/images/mount-fuji.jpg") center center/cover no-repeat;
   filter: blur(14px);
   transform: scale(1.04);
 }
@@ -2588,7 +2585,7 @@ body:not(.is-home-enhanced)::after {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(20,10,9,0.62) 0%, rgba(20,10,9,0.5) 100%), radial-gradient(circle at 18% 22%, rgba(151,58,27,0.16), transparent 32%);
+  background: linear-gradient(180deg, rgba(255,248,242,0.38) 0%, rgba(255,248,242,0.18) 100%), radial-gradient(circle at 18% 22%, rgba(151,58,27,0.08), transparent 34%);
 }
 body.is-home-enhanced {
   overflow: hidden;
@@ -2962,9 +2959,24 @@ body:not(.is-home-enhanced) .post-body hr {
 body:not(.is-home-enhanced) .post-body a {
   border-bottom-color: rgba(135,85,62,0.2);
 }
-body:not(.is-home-enhanced) .sidebar-inner,
+body:not(.is-home-enhanced) .sidebar-inner {
+  background: rgba(255,248,242,0.94);
+  box-shadow: 0 18px 42px rgba(71,47,37,0.14);
+}
 body:not(.is-home-enhanced) .header {
-  background: rgba(18,12,11,0.72);
+  background: rgba(255,247,241,0.42);
+}
+body:not(.is-home-enhanced) .sidebar-inner .site-title,
+body:not(.is-home-enhanced) .sidebar-inner .site-title a {
+  color: #3f2e28 !important;
+}
+body:not(.is-home-enhanced) .sidebar-inner .site-subtitle {
+  color: #7b5f54 !important;
+}
+body:not(.is-home-enhanced) .sidebar {
+  background: rgba(255,248,242,0.14) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(8px);
 }
 @-moz-keyframes home-moving-borders {
   0% {
